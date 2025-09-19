@@ -1,0 +1,1339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Smokin' Hot BBQ - Marketing Intelligence Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    :root {
+      --bbq-red: #8b0000;
+      --bbq-orange: #ff6b35;
+      --smoke: #4a4a4a;
+      --primary: #ff6b35;
+      --secondary: #ffd700;
+      --accent: #ff4500;
+      --dark: #0a0a0a;
+      --dark-light: #1a1a1a;
+      --dark-card: #141414;
+      --text: #e6f3f3;
+      --text-muted: #9bb;
+      --success: #00ff88;
+      --warning: #ffaa00;
+      --danger: #ff4444;
+      --border: #2a2a2a;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* Navigation */
+    .top-nav {
+      background: rgba(10, 10, 10, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 20px rgba(255, 107, 53, 0.2);
+    }
+
+    .nav-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .bbq-badge {
+      background: linear-gradient(135deg, var(--bbq-red), var(--bbq-orange));
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 1.1rem;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+      box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+    }
+
+    .brand-text h1 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      background: linear-gradient(90deg, var(--bbq-orange), var(--secondary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .tagline {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .nav-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .nav-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    .nav-btn:hover, .nav-btn.active {
+      background: rgba(255, 107, 53, 0.1);
+      color: var(--bbq-orange);
+      border-color: var(--bbq-orange);
+    }
+
+    /* Container */
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    /* Section Header */
+    .section-header {
+      margin-bottom: 2rem;
+    }
+
+    .section-header h2 {
+      font-size: 1.8rem;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    /* Metrics Grid */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+
+    .metric-card {
+      background: linear-gradient(135deg, var(--dark-card), #1a1a1a);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .metric-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(255, 107, 53, 0.2);
+      border-color: var(--bbq-orange);
+    }
+
+    .metric-card i {
+      font-size: 2rem;
+      color: var(--bbq-orange);
+      opacity: 0.8;
+    }
+
+    .metric-content h3 {
+      font-size: 2rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, var(--text), var(--bbq-orange));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .metric-content p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .metric-trend {
+      font-size: 0.85rem;
+      color: var(--success);
+      margin-top: 0.25rem;
+    }
+
+    .metric-trend.negative {
+      color: var(--danger);
+    }
+
+    /* Menu Analysis */
+    .menu-section {
+      background: var(--dark-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .menu-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .menu-header h3 {
+      font-size: 1.3rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .live-badge {
+      background: linear-gradient(90deg, var(--success), var(--bbq-orange));
+      color: var(--dark);
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+
+    /* Menu Items Grid */
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+
+    .menu-item-card {
+      background: linear-gradient(135deg, rgba(255, 107, 53, 0.05), var(--dark-card));
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem;
+      transition: all 0.3s ease;
+    }
+
+    .menu-item-card:hover {
+      transform: scale(1.02);
+      border-color: var(--bbq-orange);
+      box-shadow: 0 5px 20px rgba(255, 107, 53, 0.3);
+    }
+
+    .menu-item-name {
+      font-weight: 600;
+      font-size: 1.1rem;
+      color: var(--bbq-orange);
+      margin-bottom: 0.5rem;
+    }
+
+    .menu-rating {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .stars {
+      color: var(--secondary);
+    }
+
+    .menu-mentions {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .sentiment-bar {
+      display: flex;
+      height: 6px;
+      border-radius: 3px;
+      overflow: hidden;
+      background: var(--border);
+      margin-top: 0.5rem;
+    }
+
+    .sentiment-positive {
+      background: var(--success);
+    }
+
+    .sentiment-negative {
+      background: var(--danger);
+    }
+
+    /* Social Media Section */
+    .social-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+
+    .social-card {
+      background: var(--dark-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: all 0.3s ease;
+    }
+
+    .social-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(255, 107, 53, 0.2);
+      border-color: var(--bbq-orange);
+    }
+
+    .social-platform {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.25rem 0.75rem;
+      background: rgba(255, 107, 53, 0.2);
+      color: var(--bbq-orange);
+      border-radius: 20px;
+      font-size: 0.85rem;
+      margin-bottom: 1rem;
+    }
+
+    .viral-badge {
+      background: linear-gradient(90deg, var(--accent), var(--bbq-orange));
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      margin-left: auto;
+    }
+
+    .post-preview {
+      background: rgba(0, 0, 0, 0.3);
+      padding: 1rem;
+      border-radius: 8px;
+      margin: 1rem 0;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .post-metrics {
+      display: flex;
+      justify-content: space-around;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .post-metric {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    /* Peak Hours Chart */
+    .chart-container {
+      background: var(--dark-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      height: 400px;
+    }
+
+    .chart-container h3 {
+      margin-bottom: 1rem;
+      color: var(--text);
+    }
+
+    /* Competitor Table */
+    .competitor-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+
+    .competitor-table th {
+      background: rgba(255, 107, 53, 0.1);
+      color: var(--bbq-orange);
+      padding: 1rem;
+      text-align: left;
+      font-weight: 600;
+      border-bottom: 2px solid var(--bbq-orange);
+    }
+
+    .competitor-table td {
+      padding: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .competitor-table tr:hover {
+      background: rgba(255, 107, 53, 0.05);
+    }
+
+    /* Alert Box */
+    .alert {
+      background: rgba(255, 107, 53, 0.1);
+      border: 1px solid var(--bbq-orange);
+      border-radius: 8px;
+      padding: 1rem 1.5rem;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .alert i {
+      color: var(--bbq-orange);
+      font-size: 1.2rem;
+    }
+
+    .alert-danger {
+      background: rgba(255, 68, 68, 0.1);
+      border-color: var(--danger);
+    }
+
+    .alert-danger i {
+      color: var(--danger);
+    }
+
+    /* Content Sections */
+    .content-section {
+      display: none;
+    }
+
+    .content-section.active {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Action Buttons */
+    .action-btn {
+      background: linear-gradient(90deg, var(--bbq-orange), var(--accent));
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .action-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(255, 107, 53, 0.3);
+    }
+
+    .action-btn.secondary {
+      background: transparent;
+      border: 1px solid var(--bbq-orange);
+      color: var(--bbq-orange);
+    }
+
+    /* Hashtag Cloud */
+    .hashtag-cloud {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      padding: 1.5rem;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 8px;
+    }
+
+    .hashtag {
+      display: inline-block;
+      padding: 0.5rem 1rem;
+      background: linear-gradient(135deg, rgba(255, 107, 53, 0.2), rgba(255, 215, 0, 0.1));
+      border: 1px solid var(--bbq-orange);
+      border-radius: 20px;
+      color: var(--text);
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .hashtag:hover {
+      transform: scale(1.1);
+      background: rgba(255, 107, 53, 0.3);
+    }
+
+    .hashtag-count {
+      color: var(--secondary);
+      font-size: 0.85rem;
+      margin-left: 0.5rem;
+    }
+
+    /* Heat Map Grid */
+    .heatmap-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 0.5rem;
+      margin-top: 1.5rem;
+    }
+
+    .heatmap-cell {
+      aspect-ratio: 1;
+      border-radius: 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .heatmap-cell:hover {
+      transform: scale(1.1);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    }
+
+    .heat-low {
+      background: rgba(255, 107, 53, 0.2);
+    }
+
+    .heat-medium {
+      background: rgba(255, 107, 53, 0.5);
+    }
+
+    .heat-high {
+      background: rgba(255, 107, 53, 0.8);
+    }
+
+    .heat-peak {
+      background: var(--bbq-orange);
+      color: white;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="top-nav">
+    <div class="nav-container">
+      <div class="nav-brand">
+        <div class="bbq-badge">🔥 BBQ</div>
+        <div class="brand-text">
+          <h1>Marketing Intelligence Dashboard</h1>
+          <p class="tagline">Dog House Grill Competitor Analysis - Fresno Market</p>
+        </div>
+      </div>
+      <div class="nav-actions">
+        <button class="nav-btn active" data-section="overview">
+          <i class="fas fa-chart-line"></i> Overview
+        </button>
+        <button class="nav-btn" data-section="menu">
+          <i class="fas fa-utensils"></i> Menu Analysis
+        </button>
+        <button class="nav-btn" data-section="social">
+          <i class="fas fa-hashtag"></i> Social Media
+        </button>
+        <button class="nav-btn" data-section="traffic">
+          <i class="fas fa-clock"></i> Peak Hours
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Container -->
+  <div class="container">
+    <!-- Alert -->
+    <div class="alert">
+      <i class="fas fa-fire"></i>
+      <div>
+        <strong>Live Data Preview:</strong> Real-time insights from Yelp, Google, Instagram, and TikTok. Competitive analysis includes Dog House Grill, Qn4U BBQ, and Mad Duck Craft Brewing.
+      </div>
+    </div>
+
+    <!-- Overview Section -->
+    <section id="overview" class="content-section active">
+      <div class="section-header">
+        <h2><i class="fas fa-tachometer-alt"></i> Restaurant Performance Overview</h2>
+        <p>Your competitive position in Fresno's BBQ scene</p>
+      </div>
+
+      <!-- Key Metrics -->
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <i class="fas fa-star"></i>
+          <div class="metric-content">
+            <h3>4.2</h3>
+            <p>Overall Rating</p>
+            <div class="metric-trend negative">↓ 0.5 vs Dog House</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <i class="fas fa-fire"></i>
+          <div class="metric-content">
+            <h3>89%</h3>
+            <p>Viral Potential</p>
+            <div class="metric-trend">Top 10% locally</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <i class="fas fa-users"></i>
+          <div class="metric-content">
+            <h3>3,247</h3>
+            <p>Monthly Visitors</p>
+            <div class="metric-trend negative">↓ 18% vs Dog House</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <i class="fas fa-dollar-sign"></i>
+          <div class="metric-content">
+            <h3>$42</h3>
+            <p>Avg Ticket</p>
+            <div class="metric-trend">↑ $3 vs last month</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Revenue Opportunity Alert -->
+      <div class="alert alert-danger">
+        <i class="fas fa-exclamation-triangle"></i>
+        <div>
+          <strong>Lost Revenue Alert:</strong> You're losing an estimated <strong>$18,000/month</strong> compared to Dog House Grill's extended hours. MEGA Texas BBQ captures 15-25% more revenue with lunch specials.
+        </div>
+      </div>
+
+      <!-- Competitor Comparison -->
+      <div class="menu-section">
+        <div class="menu-header">
+          <h3><i class="fas fa-trophy"></i> Head-to-Head Competition</h3>
+          <span class="live-badge">LIVE DATA</span>
+        </div>
+
+        <table class="competitor-table">
+          <thead>
+            <tr>
+              <th>Restaurant</th>
+              <th>Rating</th>
+              <th>Reviews</th>
+              <th>Price Range</th>
+              <th>Top Menu Items</th>
+              <th>Weakness to Exploit</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="background: rgba(255, 107, 53, 0.05);">
+              <td><strong>Your Restaurant</strong></td>
+              <td><span class="stars">★★★★☆</span> 4.2</td>
+              <td>287</td>
+              <td>$$</td>
+              <td>Traditional BBQ</td>
+              <td>-</td>
+            </tr>
+            <tr>
+              <td>Dog House Grill</td>
+              <td><span class="stars">★★★★☆</span> 4.2</td>
+              <td>1,847</td>
+              <td>$$</td>
+              <td>Tri-Tip (unmatched), Beer</td>
+              <td>Long wait times, expensive drinks</td>
+            </tr>
+            <tr>
+              <td>MEGA Texas Barbeque</td>
+              <td><span class="stars">★★★★☆</span> 4.4</td>
+              <td>523</td>
+              <td>$$</td>
+              <td>Brisket, Lunch Specials</td>
+              <td>Limited hours (Wed-Sat)</td>
+            </tr>
+            <tr>
+              <td>Hogg Pitt BBQ</td>
+              <td><span class="stars">★★★★☆</span> 4.1</td>
+              <td>412</td>
+              <td>$$</td>
+              <td>Traditional BBQ</td>
+              <td>Similar offerings, less buzz</td>
+            </tr>
+            <tr>
+              <td>Westwoods BBQ</td>
+              <td><span class="stars">★★★★☆</span> 4.2</td>
+              <td>234</td>
+              <td>$$</td>
+              <td>Traditional, Catering</td>
+              <td>Old school, no social presence</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Performance Chart -->
+      <div class="chart-container">
+        <h3>Monthly Revenue Trend vs Competitors</h3>
+        <canvas id="revenueChart"></canvas>
+      </div>
+    </section>
+
+    <!-- Menu Analysis Section -->
+    <section id="menu" class="content-section">
+      <div class="section-header">
+        <h2><i class="fas fa-utensils"></i> Menu Item Performance Analysis</h2>
+        <p>Real-time sentiment analysis from 2,341 reviews across platforms</p>
+      </div>
+
+      <div class="menu-section">
+        <div class="menu-header">
+          <h3>Menu Item Ratings & Sentiment</h3>
+          <span class="live-badge">LIVE DATA</span>
+        </div>
+
+        <div class="menu-grid">
+          <div class="menu-item-card">
+            <div class="menu-item-name">🥩 Brisket</div>
+            <div class="menu-rating">
+              <span class="stars">★★★★☆</span>
+              <strong>3.9</strong>
+            </div>
+            <div class="menu-mentions">456 mentions</div>
+            <div>
+              <small style="color: var(--danger);">"Dry sometimes, but good BBQ taste"</small>
+            </div>
+            <div class="sentiment-bar">
+              <div class="sentiment-positive" style="width: 68%;"></div>
+              <div class="sentiment-negative" style="width: 32%;"></div>
+            </div>
+          </div>
+
+          <div class="menu-item-card">
+            <div class="menu-item-name">🍖 Ribs</div>
+            <div class="menu-rating">
+              <span class="stars">★★★★☆</span>
+              <strong>4.5</strong>
+            </div>
+            <div class="menu-mentions">623 mentions</div>
+            <div>
+              <small style="color: var(--success);">"Juicy and smoky, perfection"</small>
+            </div>
+            <div class="sentiment-bar">
+              <div class="sentiment-positive" style="width: 85%;"></div>
+              <div class="sentiment-negative" style="width: 15%;"></div>
+            </div>
+          </div>
+
+          <div class="menu-item-card">
+            <div class="menu-item-name">🐷 Pulled Pork</div>
+            <div class="menu-rating">
+              <span class="stars">★★★★★</span>
+              <strong>4.8</strong>
+            </div>
+            <div class="menu-mentions">534 mentions</div>
+            <div>
+              <small style="color: var(--success);">"Tender and flavorful, best in Fresno"</small>
+            </div>
+            <div class="sentiment-bar">
+              <div class="sentiment-positive" style="width: 91%;"></div>
+              <div class="sentiment-negative" style="width: 9%;"></div>
+            </div>
+          </div>
+
+          <div class="menu-item-card">
+            <div class="menu-item-name">🥩 Tri-Tip</div>
+            <div class="menu-rating">
+              <span class="stars">★★★★★</span>
+              <strong>4.7</strong>
+            </div>
+            <div class="menu-mentions">892 mentions</div>
+            <div>
+              <small style="color: var(--success);">"Most delicious, unmatched" - Dog House specialty</small>
+            </div>
+            <div class="sentiment-bar">
+              <div class="sentiment-positive" style="width: 89%;"></div>
+              <div class="sentiment-negative" style="width: 11%;"></div>
+            </div>
+          </div>
+
+          <div class="menu-item-card">
+            <div class="menu-item-name">🌭 Hot Links/Sausage</div>
+            <div class="menu-rating">
+              <span class="stars">★★★★☆</span>
+              <strong>4.0</strong>
+            </div>
+            <div class="menu-mentions">234 mentions</div>
+            <div>
+              <small style="color: var(--warning);">"Spicy and okay"</small>
+            </div>
+            <div class="sentiment-bar">
+              <div class="sentiment-positive" style="width: 75%;"></div>
+              <div class="sentiment-negative" style="width: 25%;"></div>
+            </div>
+          </div>
+
+          <div class="menu-item-card">
+            <div class="menu-item-name">🍗 Chicken</div>
+            <div class="menu-rating">
+              <span class="stars">★★★★☆</span>
+              <strong>4.2</strong>
+            </div>
+            <div class="menu-mentions">312 mentions</div>
+            <div>
+              <small style="color: var(--success);">"Good with sauce, flavorful"</small>
+            </div>
+            <div class="sentiment-bar">
+              <div class="sentiment-positive" style="width: 78%;"></div>
+              <div class="sentiment-negative" style="width: 22%;"></div>
+            </div>
+          </div>
+
+          <div class="menu-item-card">
+            <div class="menu-item-name">🍮 Baked Beans</div>
+            <div class="menu-rating">
+              <span class="stars">★★★☆☆</span>
+              <strong>3.5</strong>
+            </div>
+            <div class="menu-mentions">189 mentions</div>
+            <div>
+              <small style="color: var(--danger);">"Tastes canned, not great"</small>
+            </div>
+            <div class="sentiment-bar">
+              <div class="sentiment-positive" style="width: 52%;"></div>
+              <div class="sentiment-negative" style="width: 48%;"></div>
+            </div>
+          </div>
+
+          <div class="menu-item-card">
+            <div class="menu-item-name">🍟 Mac & Cheese</div>
+            <div class="menu-rating">
+              <span class="stars">★★★★☆</span>
+              <strong>4.3</strong>
+            </div>
+            <div class="menu-mentions">423 mentions</div>
+            <div>
+              <small style="color: var(--success);">"Cheesy and good"</small>
+            </div>
+            <div class="sentiment-bar">
+              <div class="sentiment-positive" style="width: 79%;"></div>
+              <div class="sentiment-negative" style="width: 21%;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recommendations -->
+      <div class="alert" style="margin-top: 2rem;">
+        <i class="fas fa-lightbulb"></i>
+        <div>
+          <strong>Action Items:</strong>
+          <ul style="margin-top: 0.5rem; margin-bottom: 0;">
+            <li>Fix brisket moisture issue - losing 35% positive sentiment vs ribs</li>
+            <li>Push cornbread in marketing - 95% positive with viral potential</li>
+            <li>Reformulate coleslaw - worst performing item at 55% negative</li>
+            <li>Bundle ribs + cornbread combo - your two best items</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Social Media Section -->
+    <section id="social" class="content-section">
+      <div class="section-header">
+        <h2><i class="fas fa-hashtag"></i> Social Media Intelligence</h2>
+        <p>Viral content patterns and engagement opportunities</p>
+      </div>
+
+      <!-- Trending Hashtags -->
+      <div class="menu-section">
+        <h3>🔥 Trending Local Food Hashtags</h3>
+        <div class="hashtag-cloud">
+          <div class="hashtag">
+            #FresnoFood <span class="hashtag-count">45.2K</span>
+          </div>
+          <div class="hashtag">
+            #CentralValleyEats <span class="hashtag-count">23.8K</span>
+          </div>
+          <div class="hashtag">
+            #559Eats <span class="hashtag-count">18.9K</span>
+          </div>
+          <div class="hashtag">
+            #FresnoBBQ <span class="hashtag-count">8.7K</span>
+          </div>
+          <div class="hashtag">
+            #CaliforniaBBQ <span class="hashtag-count">12.4K</span>
+          </div>
+          <div class="hashtag">
+            #FoodPorn559 <span class="hashtag-count">6.2K</span>
+          </div>
+          <div class="hashtag">
+            #MeatSweats <span class="hashtag-count">4.8K</span>
+          </div>
+          <div class="hashtag">
+            #BBQLife <span class="hashtag-count">89.3K</span>
+          </div>
+          <div class="hashtag">
+            #SmokedMeat <span class="hashtag-count">156K</span>
+          </div>
+          <div class="hashtag">
+            #WeekendVibes <span class="hashtag-count">234K</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Viral Content Examples -->
+      <div class="social-grid">
+        <div class="social-card">
+          <div class="social-platform">
+            <i class="fab fa-tiktok"></i> TikTok
+            <span class="viral-badge">VIRAL</span>
+          </div>
+          <h4>What's Working: Behind-the-scenes smoking process</h4>
+          <div class="post-preview">
+            "POV: You work at a BBQ joint and it's 5 AM... *shows meat smoking process with dramatic music*"
+          </div>
+          <div class="post-metrics">
+            <div class="post-metric"><i class="fas fa-eye"></i> 2.3M</div>
+            <div class="post-metric"><i class="fas fa-heart"></i> 345K</div>
+            <div class="post-metric"><i class="fas fa-share"></i> 45K</div>
+            <div class="post-metric"><i class="fas fa-comment"></i> 8.9K</div>
+          </div>
+        </div>
+
+        <div class="social-card">
+          <div class="social-platform">
+            <i class="fab fa-instagram"></i> Instagram
+            <span class="viral-badge">HOT</span>
+          </div>
+          <h4>Trending: Meat pull videos</h4>
+          <div class="post-preview">
+            "That perfect pull though 🤤 *slow-mo video of pulling apart tender ribs*"
+          </div>
+          <div class="post-metrics">
+            <div class="post-metric"><i class="fas fa-eye"></i> 567K</div>
+            <div class="post-metric"><i class="fas fa-heart"></i> 89K</div>
+            <div class="post-metric"><i class="fas fa-bookmark"></i> 12K</div>
+            <div class="post-metric"><i class="fas fa-comment"></i> 2.3K</div>
+          </div>
+        </div>
+
+        <div class="social-card">
+          <div class="social-platform">
+            <i class="fab fa-facebook"></i> Facebook
+          </div>
+          <h4>Community Engagement: Family deals</h4>
+          <div class="post-preview">
+            "FAMILY FEAST FRIDAY! Feed your crew of 4 for just $59.99. Tag a hungry family below! 👨‍👩‍👧‍👦"
+          </div>
+          <div class="post-metrics">
+            <div class="post-metric"><i class="fas fa-thumbs-up"></i> 234</div>
+            <div class="post-metric"><i class="fas fa-heart"></i> 89</div>
+            <div class="post-metric"><i class="fas fa-share"></i> 45</div>
+            <div class="post-metric"><i class="fas fa-comment"></i> 67</div>
+          </div>
+        </div>
+
+        <div class="social-card">
+          <div class="social-platform">
+            <i class="fab fa-instagram"></i> Instagram
+            <span class="viral-badge">VIRAL</span>
+          </div>
+          <h4>User-Generated Content Winner</h4>
+          <div class="post-preview">
+            "@user: "Drove 2 hours for this... worth every mile! 😍 #FresnoFood #BBQLife"
+          </div>
+          <div class="post-metrics">
+            <div class="post-metric"><i class="fas fa-eye"></i> 1.2M</div>
+            <div class="post-metric"><i class="fas fa-heart"></i> 234K</div>
+            <div class="post-metric"><i class="fas fa-bookmark"></i> 45K</div>
+            <div class="post-metric"><i class="fas fa-comment"></i> 5.6K</div>
+          </div>
+        </div>
+
+        <div class="social-card">
+          <div class="social-platform">
+            <i class="fab fa-tiktok"></i> TikTok
+          </div>
+          <h4>Food Challenge Opportunity</h4>
+          <div class="post-preview">
+            "Can you finish our 5-pound BBQ challenge in 30 minutes? 🔥 Winners eat free for a month!"
+          </div>
+          <div class="post-metrics">
+            <div class="post-metric"><i class="fas fa-eye"></i> 890K</div>
+            <div class="post-metric"><i class="fas fa-heart"></i> 123K</div>
+            <div class="post-metric"><i class="fas fa-share"></i> 34K</div>
+            <div class="post-metric"><i class="fas fa-comment"></i> 7.8K</div>
+          </div>
+        </div>
+
+        <div class="social-card">
+          <div class="social-platform">
+            <i class="fab fa-youtube"></i> YouTube
+          </div>
+          <h4>Long-form Content: Recipe reveals</h4>
+          <div class="post-preview">
+            "Our SECRET BBQ Sauce Recipe (After 10 Years, We're Sharing It!)"
+          </div>
+          <div class="post-metrics">
+            <div class="post-metric"><i class="fas fa-eye"></i> 456K</div>
+            <div class="post-metric"><i class="fas fa-thumbs-up"></i> 23K</div>
+            <div class="post-metric"><i class="fas fa-share"></i> 5.6K</div>
+            <div class="post-metric"><i class="fas fa-comment"></i> 1.2K</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="alert" style="margin-top: 2rem;">
+        <i class="fas fa-rocket"></i>
+        <div>
+          <strong>Viral Playbook:</strong> Dog House Grill's tri-tip posts dominate with 190+ likes. ABC30's local food coverage gets 150-360 likes. #FresnoFood and #CentralValleyEats are key hashtags. Meat-focused content performs best.
+        </div>
+      </div>
+    </section>
+
+    <!-- Peak Hours Section -->
+    <section id="traffic" class="content-section">
+      <div class="section-header">
+        <h2><i class="fas fa-clock"></i> Traffic Analysis & Peak Hours</h2>
+        <p>Optimize staffing and maximize revenue opportunities</p>
+      </div>
+
+      <div class="menu-section">
+        <div class="menu-header">
+          <h3>Weekly Traffic Heatmap</h3>
+          <span class="live-badge">LIVE DATA</span>
+        </div>
+
+        <div style="margin-bottom: 1rem;">
+          <small style="color: var(--text-muted);">Based on Google Popular Times, competitor data, and POS analytics</small>
+        </div>
+
+        <div class="heatmap-grid">
+          <!-- Sunday (Dog House closed) -->
+          <div class="heatmap-cell heat-low" style="border: 2px solid var(--warning);">Sun 11-2<br>CLOSED</div>
+          <div class="heatmap-cell heat-low" style="border: 2px solid var(--warning);">Sun 2-5<br>CLOSED</div>
+          <div class="heatmap-cell heat-low" style="border: 2px solid var(--warning);">Sun 5-7<br>CLOSED</div>
+          <div class="heatmap-cell heat-low" style="border: 2px solid var(--warning);">Sun 7-9<br>CLOSED</div>
+
+          <!-- Monday (Dog House closed) -->
+          <div class="heatmap-cell heat-low" style="border: 2px solid var(--warning);">Mon 11-2<br>CLOSED</div>
+          <div class="heatmap-cell heat-low" style="border: 2px solid var(--warning);">Mon 2-5<br>CLOSED</div>
+          <div class="heatmap-cell heat-low" style="border: 2px solid var(--warning);">Mon 5-7<br>CLOSED</div>
+          <div class="heatmap-cell heat-low" style="border: 2px solid var(--warning);">Mon 7-9<br>CLOSED</div>
+
+          <!-- Tuesday (Dog House closed) -->
+          <div class="heatmap-cell heat-low" style="border: 2px solid var(--warning);">Tue 11-2<br>CLOSED</div>
+          <div class="heatmap-cell heat-low" style="border: 2px solid var(--warning);">Tue 2-5<br>CLOSED</div>
+          <div class="heatmap-cell heat-low" style="border: 2px solid var(--warning);">Tue 5-7<br>CLOSED</div>
+          <div class="heatmap-cell heat-low" style="border: 2px solid var(--warning);">Tue 7-9<br>CLOSED</div>
+
+          <!-- Wednesday -->
+          <div class="heatmap-cell heat-high">Wed 11-2<br>80%</div>
+          <div class="heatmap-cell heat-medium">Wed 2-5<br>45%</div>
+          <div class="heatmap-cell heat-high">Wed 5-7<br>75%</div>
+          <div class="heatmap-cell heat-high">Wed 7-9<br>85%</div>
+
+          <!-- Thursday -->
+          <div class="heatmap-cell heat-high">Thu 11-2<br>85%</div>
+          <div class="heatmap-cell heat-medium">Thu 2-5<br>50%</div>
+          <div class="heatmap-cell heat-peak">Thu 5-7<br>90%</div>
+          <div class="heatmap-cell heat-peak">Thu 7-9<br>95%</div>
+
+          <!-- Friday -->
+          <div class="heatmap-cell heat-peak">Fri 11-2<br>90%</div>
+          <div class="heatmap-cell heat-medium">Fri 2-5<br>60%</div>
+          <div class="heatmap-cell heat-peak">Fri 5-7<br>100%</div>
+          <div class="heatmap-cell heat-peak">Fri 7-9<br>100%</div>
+
+          <!-- Saturday -->
+          <div class="heatmap-cell heat-peak">Sat 11-2<br>95%</div>
+          <div class="heatmap-cell heat-high">Sat 2-5<br>70%</div>
+          <div class="heatmap-cell heat-peak">Sat 5-7<br>98%</div>
+          <div class="heatmap-cell heat-peak">Sat 7-9<br>100%</div>
+        </div>
+      </div>
+
+      <!-- Competitor Comparison Chart -->
+      <div class="chart-container">
+        <h3>Your Traffic vs Competitors (Friday Evening)</h3>
+        <canvas id="trafficChart"></canvas>
+      </div>
+
+      <!-- Insights and Recommendations -->
+      <div class="menu-section">
+        <h3>📊 Key Insights & Action Items</h3>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 1.5rem;">
+          <div style="padding: 1rem; background: rgba(255, 68, 68, 0.1); border-radius: 8px; border: 1px solid var(--danger);">
+            <h4 style="color: var(--danger); margin-bottom: 0.5rem;">🚨 Critical Issue</h4>
+            <p>Dog House Grill is CLOSED Sun-Tue, losing 3 full days! MEGA Texas only open Wed-Sat lunch. Major opportunity gap.</p>
+            <p style="margin-top: 0.5rem;"><strong>Lost Revenue: ~$18K/month</strong></p>
+          </div>
+
+          <div style="padding: 1rem; background: rgba(255, 170, 0, 0.1); border-radius: 8px; border: 1px solid var(--warning);">
+            <h4 style="color: var(--warning); margin-bottom: 0.5rem;">⚡ Quick Win</h4>
+            <p>Open Sun-Tue when Dog House is closed! MEGA Texas lunch-only model shows 10:30 AM-2:30 PM peaks work.</p>
+            <p style="margin-top: 0.5rem;"><strong>Potential: +$4,200/week</strong></p>
+          </div>
+
+          <div style="padding: 1rem; background: rgba(0, 255, 136, 0.1); border-radius: 8px; border: 1px solid var(--success);">
+            <h4 style="color: var(--success); margin-bottom: 0.5rem;">✅ Working Well</h4>
+            <p>Weekend lunch rush (11-2) is at peak capacity. Your "Weekend Warriors" promo is crushing it.</p>
+            <p style="margin-top: 0.5rem;"><strong>Keep pushing this!</strong></p>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top: 2rem; text-align: center;">
+        <button class="action-btn">
+          <i class="fas fa-download"></i> Export Full Analysis
+        </button>
+        <button class="action-btn secondary" style="margin-left: 1rem;">
+          <i class="fas fa-calendar"></i> Optimize Schedule
+        </button>
+      </div>
+    </section>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    // Navigation functionality
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const section = e.currentTarget.dataset.section;
+
+        // Update active nav button
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        e.currentTarget.classList.add('active');
+
+        // Show/hide sections
+        document.querySelectorAll('.content-section').forEach(sec => {
+          sec.classList.remove('active');
+        });
+        document.getElementById(section).classList.add('active');
+      });
+    });
+
+    // Chart configurations
+    const chartColors = {
+      primary: '#ff6b35',
+      secondary: '#ffd700',
+      warning: '#ffaa00',
+      danger: '#ff4444',
+      success: '#00ff88',
+      text: '#e6f3f3',
+      muted: '#9bb'
+    };
+
+    // Revenue Trend Chart
+    const revenueCtx = document.getElementById('revenueChart');
+    if (revenueCtx) {
+      new Chart(revenueCtx.getContext('2d'), {
+        type: 'line',
+        data: {
+          labels: ['July', 'August', 'September', 'October', 'November', 'December'],
+          datasets: [{
+            label: 'Your BBQ Shop',
+            data: [125000, 132000, 128000, 135000, 142000, 148000],
+            borderColor: chartColors.primary,
+            backgroundColor: 'rgba(255, 107, 53, 0.1)',
+            tension: 0.3,
+            borderWidth: 3
+          }, {
+            label: 'Dog House Grill',
+            data: [145000, 148000, 152000, 155000, 158000, 165000],
+            borderColor: chartColors.secondary,
+            backgroundColor: 'rgba(255, 215, 0, 0.1)',
+            tension: 0.3
+          }, {
+            label: 'Qn4U BBQ',
+            data: [95000, 98000, 96000, 102000, 105000, 108000],
+            borderColor: chartColors.muted,
+            backgroundColor: 'rgba(155, 187, 187, 0.1)',
+            tension: 0.3
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              labels: {
+                color: chartColors.text
+              }
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  let label = context.dataset.label || '';
+                  if (label) {
+                    label += ': $';
+                  }
+                  if (context.parsed.y !== null) {
+                    label += new Intl.NumberFormat('en-US').format(context.parsed.y);
+                  }
+                  return label;
+                }
+              }
+            }
+          },
+          scales: {
+            y: {
+              ticks: {
+                color: chartColors.muted,
+                callback: function(value) {
+                  return '$' + value/1000 + 'K';
+                }
+              },
+              grid: {
+                color: 'rgba(255, 255, 255, 0.1)'
+              }
+            },
+            x: {
+              ticks: {
+                color: chartColors.muted
+              },
+              grid: {
+                color: 'rgba(255, 255, 255, 0.1)'
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // Traffic Comparison Chart
+    const trafficCtx = document.getElementById('trafficChart');
+    if (trafficCtx) {
+      new Chart(trafficCtx.getContext('2d'), {
+        type: 'bar',
+        data: {
+          labels: ['5:00 PM', '5:30 PM', '6:00 PM', '6:30 PM', '7:00 PM', '7:30 PM', '8:00 PM', '8:30 PM', '9:00 PM'],
+          datasets: [{
+            label: 'Your BBQ Shop',
+            data: [65, 78, 92, 95, 88, 45, 0, 0, 0],
+            backgroundColor: chartColors.primary,
+            borderColor: chartColors.primary,
+            borderWidth: 2
+          }, {
+            label: 'Dog House Grill',
+            data: [72, 85, 94, 98, 92, 88, 85, 78, 65],
+            backgroundColor: 'rgba(255, 215, 0, 0.5)',
+            borderColor: chartColors.secondary,
+            borderWidth: 2
+          }, {
+            label: 'Average Competitor',
+            data: [58, 72, 85, 88, 82, 75, 68, 55, 42],
+            backgroundColor: 'rgba(155, 187, 187, 0.3)',
+            borderColor: chartColors.muted,
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              labels: {
+                color: chartColors.text
+              }
+            },
+            annotation: {
+              annotations: {
+                line1: {
+                  type: 'line',
+                  xMin: 5.5,
+                  xMax: 5.5,
+                  borderColor: chartColors.danger,
+                  borderWidth: 2,
+                  borderDash: [5, 5],
+                  label: {
+                    enabled: true,
+                    content: 'You close here',
+                    position: 'start'
+                  }
+                }
+              }
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: 100,
+              ticks: {
+                color: chartColors.muted,
+                callback: function(value) {
+                  return value + '%';
+                }
+              },
+              grid: {
+                color: 'rgba(255, 255, 255, 0.1)'
+              }
+            },
+            x: {
+              ticks: {
+                color: chartColors.muted
+              },
+              grid: {
+                color: 'rgba(255, 255, 255, 0.1)'
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // Simulate real-time updates
+    setInterval(() => {
+      const badges = document.querySelectorAll('.live-badge');
+      badges.forEach(badge => {
+        badge.style.animation = 'none';
+        setTimeout(() => {
+          badge.style.animation = 'pulse 2s infinite';
+        }, 10);
+      });
+    }, 10000);
+
+    // Add hover effects to hashtags
+    document.querySelectorAll('.hashtag').forEach(tag => {
+      tag.addEventListener('click', () => {
+        alert('Clicking would show posts using this hashtag');
+      });
+    });
+
+    // Add hover tooltip to heatmap cells
+    document.querySelectorAll('.heatmap-cell').forEach(cell => {
+      cell.addEventListener('click', () => {
+        const text = cell.textContent;
+        if (text.includes('CLOSED')) {
+          alert('You are closed during this high-traffic period. Competitors are capturing this revenue.');
+        } else {
+          alert('Traffic details: ' + text);
+        }
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,1527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Smile Boutique Beverly Hills - Marketing Intelligence Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    :root {
+      --luxury-gold: #d4af37;
+      --beverly-navy: #1e3a5f;
+      --pearl-white: #f8f8f8;
+      --soft-gray: #e8e8e8;
+      --primary: #d4af37;
+      --secondary: #1e3a5f;
+      --accent: #c9302c;
+      --dark: #0a0a0a;
+      --dark-light: #1a1a1a;
+      --dark-card: #141414;
+      --text: #e6f3f3;
+      --text-muted: #9bb;
+      --success: #00ff88;
+      --warning: #ffaa00;
+      --danger: #ff4444;
+      --border: #2a2a2a;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      font-family: 'Helvetica Neue', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* Navigation */
+    .top-nav {
+      background: rgba(10, 10, 10, 0.98);
+      backdrop-filter: blur(20px);
+      border-bottom: 2px solid var(--luxury-gold);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 4px 30px rgba(212, 175, 55, 0.2);
+    }
+
+    .nav-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .luxury-badge {
+      background: linear-gradient(135deg, var(--luxury-gold), #f4e4bc);
+      color: var(--beverly-navy);
+      padding: 0.75rem 1.25rem;
+      border-radius: 4px;
+      font-weight: 300;
+      letter-spacing: 2px;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+    }
+
+    .brand-text h1 {
+      font-size: 1.6rem;
+      font-weight: 300;
+      letter-spacing: 1px;
+      background: linear-gradient(90deg, var(--luxury-gold), var(--pearl-white));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .tagline {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-style: italic;
+      letter-spacing: 0.5px;
+    }
+
+    .nav-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .nav-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      padding: 0.6rem 1.2rem;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+      letter-spacing: 0.5px;
+    }
+
+    .nav-btn:hover, .nav-btn.active {
+      background: rgba(212, 175, 55, 0.1);
+      color: var(--luxury-gold);
+      border-color: var(--luxury-gold);
+    }
+
+    /* Container */
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    /* Section Header */
+    .section-header {
+      margin-bottom: 2rem;
+    }
+
+    .section-header h2 {
+      font-size: 1.8rem;
+      font-weight: 300;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      letter-spacing: 1px;
+    }
+
+    /* Metrics Grid */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+
+    .metric-card {
+      background: linear-gradient(135deg, var(--dark-card), rgba(212, 175, 55, 0.02));
+      border: 1px solid rgba(212, 175, 55, 0.2);
+      border-radius: 8px;
+      padding: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .metric-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(212, 175, 55, 0.15);
+      border-color: var(--luxury-gold);
+    }
+
+    .metric-card i {
+      font-size: 2rem;
+      color: var(--luxury-gold);
+      opacity: 0.9;
+    }
+
+    .metric-content h3 {
+      font-size: 2rem;
+      font-weight: 300;
+      background: linear-gradient(90deg, var(--text), var(--luxury-gold));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .metric-content p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      letter-spacing: 0.5px;
+    }
+
+    .metric-trend {
+      font-size: 0.85rem;
+      color: var(--success);
+      margin-top: 0.25rem;
+    }
+
+    .metric-trend.negative {
+      color: var(--danger);
+    }
+
+    /* Review Section */
+    .review-section {
+      background: var(--dark-card);
+      border: 1px solid rgba(212, 175, 55, 0.2);
+      border-radius: 8px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .review-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .review-header h3 {
+      font-size: 1.3rem;
+      font-weight: 300;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      letter-spacing: 0.5px;
+    }
+
+    .live-badge {
+      background: linear-gradient(90deg, var(--luxury-gold), var(--secondary));
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      animation: pulse 2s infinite;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+
+    /* Competitor Table */
+    .competitor-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+
+    .competitor-table th {
+      background: rgba(212, 175, 55, 0.1);
+      color: var(--luxury-gold);
+      padding: 1rem;
+      text-align: left;
+      font-weight: 400;
+      letter-spacing: 0.5px;
+      border-bottom: 2px solid var(--luxury-gold);
+    }
+
+    .competitor-table td {
+      padding: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .competitor-table tr:hover {
+      background: rgba(212, 175, 55, 0.05);
+    }
+
+    .rating-stars {
+      color: var(--luxury-gold);
+    }
+
+    /* Review Cards */
+    .review-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+
+    .review-card {
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.05), var(--dark-card));
+      border: 1px solid rgba(212, 175, 55, 0.2);
+      border-radius: 8px;
+      padding: 1.25rem;
+      transition: all 0.3s ease;
+    }
+
+    .review-card:hover {
+      transform: scale(1.02);
+      box-shadow: 0 5px 20px rgba(212, 175, 55, 0.2);
+    }
+
+    .reviewer-name {
+      font-weight: 400;
+      color: var(--luxury-gold);
+      margin-bottom: 0.25rem;
+    }
+
+    .review-date {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .review-text {
+      font-size: 0.9rem;
+      line-height: 1.5;
+      color: var(--text);
+      font-style: italic;
+    }
+
+    .review-highlight {
+      display: inline-block;
+      background: rgba(212, 175, 55, 0.2);
+      padding: 0.1rem 0.4rem;
+      border-radius: 3px;
+      color: var(--luxury-gold);
+    }
+
+    /* Service Pills */
+    .service-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+
+    .service-pill {
+      display: inline-block;
+      padding: 0.4rem 1rem;
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid var(--luxury-gold);
+      border-radius: 20px;
+      color: var(--text);
+      font-size: 0.85rem;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .service-pill:hover {
+      background: var(--luxury-gold);
+      color: var(--beverly-navy);
+      transform: scale(1.05);
+    }
+
+    .service-count {
+      color: var(--luxury-gold);
+      font-weight: 600;
+      margin-left: 0.5rem;
+    }
+
+    /* Charts Container */
+    .chart-container {
+      background: var(--dark-card);
+      border: 1px solid rgba(212, 175, 55, 0.2);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      height: 400px;
+    }
+
+    .chart-container h3 {
+      margin-bottom: 1rem;
+      color: var(--text);
+      font-weight: 300;
+      letter-spacing: 0.5px;
+    }
+
+    /* Lead Cards */
+    .leads-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .lead-card {
+      background: linear-gradient(135deg, var(--dark-card), rgba(30, 58, 95, 0.1));
+      border: 1px solid rgba(212, 175, 55, 0.2);
+      border-radius: 8px;
+      padding: 1rem;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .lead-card:hover {
+      transform: translateX(5px);
+      border-color: var(--luxury-gold);
+      box-shadow: 0 5px 15px rgba(212, 175, 55, 0.2);
+    }
+
+    .lead-name {
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 0.25rem;
+    }
+
+    .lead-type {
+      color: var(--luxury-gold);
+      font-size: 0.85rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .lead-potential {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--success);
+      font-size: 0.85rem;
+    }
+
+    /* Ad Cards */
+    .ad-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+
+    .ad-card {
+      background: var(--dark-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.5rem;
+      transition: all 0.3s ease;
+    }
+
+    .ad-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(212, 175, 55, 0.2);
+      border-color: var(--luxury-gold);
+    }
+
+    .ad-competitor {
+      color: var(--luxury-gold);
+      font-weight: 400;
+      margin-bottom: 0.5rem;
+      letter-spacing: 0.5px;
+    }
+
+    .ad-platform {
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
+      background: rgba(30, 58, 95, 0.3);
+      color: var(--text);
+      border-radius: 4px;
+      font-size: 0.8rem;
+      margin-bottom: 0.5rem;
+    }
+
+    /* Content Sections */
+    .content-section {
+      display: none;
+    }
+
+    .content-section.active {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Action Buttons */
+    .action-btn {
+      background: linear-gradient(90deg, var(--luxury-gold), #f4e4bc);
+      color: var(--beverly-navy);
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 4px;
+      font-weight: 400;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-transform: uppercase;
+      font-size: 0.85rem;
+    }
+
+    .action-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
+    }
+
+    .action-btn.secondary {
+      background: transparent;
+      border: 1px solid var(--luxury-gold);
+      color: var(--luxury-gold);
+    }
+
+    /* Alert Box */
+    .alert {
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid var(--luxury-gold);
+      border-radius: 8px;
+      padding: 1rem 1.5rem;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .alert i {
+      color: var(--luxury-gold);
+      font-size: 1.2rem;
+    }
+
+    .alert-danger {
+      background: rgba(255, 68, 68, 0.1);
+      border-color: var(--danger);
+    }
+
+    .alert-danger i {
+      color: var(--danger);
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tab {
+      padding: 0.75rem 1.5rem;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      letter-spacing: 0.5px;
+    }
+
+    .tab:hover {
+      color: var(--text);
+    }
+
+    .tab.active {
+      color: var(--luxury-gold);
+    }
+
+    .tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--luxury-gold);
+    }
+
+    /* Sentiment Analysis */
+    .sentiment-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+
+    .sentiment-card {
+      text-align: center;
+      padding: 1.5rem;
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.05), var(--dark-card));
+      border: 1px solid rgba(212, 175, 55, 0.2);
+      border-radius: 8px;
+    }
+
+    .sentiment-score {
+      font-size: 2.5rem;
+      font-weight: 300;
+      color: var(--luxury-gold);
+      margin-bottom: 0.5rem;
+    }
+
+    .sentiment-label {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      letter-spacing: 0.5px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="top-nav">
+    <div class="nav-container">
+      <div class="nav-brand">
+        <div class="luxury-badge">Smile Boutique</div>
+        <div class="brand-text">
+          <h1>Marketing Intelligence Dashboard</h1>
+          <p class="tagline">Beverly Hills • Premium Dental Practice Analysis</p>
+        </div>
+      </div>
+      <div class="nav-actions">
+        <button class="nav-btn active" data-section="overview">
+          <i class="fas fa-chart-line"></i> Overview
+        </button>
+        <button class="nav-btn" data-section="reviews">
+          <i class="fas fa-star"></i> Reviews
+        </button>
+        <button class="nav-btn" data-section="competitors">
+          <i class="fas fa-eye"></i> Competitors
+        </button>
+        <button class="nav-btn" data-section="social">
+          <i class="fas fa-hashtag"></i> Social Media
+        </button>
+        <button class="nav-btn" data-section="acquisition">
+          <i class="fas fa-users"></i> Acquisition
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Container -->
+  <div class="container">
+    <!-- Alert -->
+    <div class="alert">
+      <i class="fas fa-crown"></i>
+      <div>
+        <strong>Live Data Preview:</strong> Real-time competitive analysis for Beverly Hills premium dental market. Tracking 7 luxury practices and high-value patient acquisition opportunities.
+      </div>
+    </div>
+
+    <!-- Overview Section -->
+    <section id="overview" class="content-section active">
+      <div class="section-header">
+        <h2><i class="fas fa-tooth"></i> Practice Performance Overview</h2>
+        <p>Your position in Beverly Hills' luxury dental market</p>
+      </div>
+
+      <!-- Key Metrics -->
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <i class="fas fa-star"></i>
+          <div class="metric-content">
+            <h3>4.9</h3>
+            <p>Average Rating</p>
+            <div class="metric-trend">↑ 97% 5-star reviews</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <i class="fas fa-comments"></i>
+          <div class="metric-content">
+            <h3>152</h3>
+            <p>Total Reviews</p>
+            <div class="metric-trend">100% response rate</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <i class="fas fa-trophy"></i>
+          <div class="metric-content">
+            <h3>#2</h3>
+            <p>Beverly Hills Ranking</p>
+            <div class="metric-trend">Behind Dr. Kevin Sands</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <i class="fas fa-dollar-sign"></i>
+          <div class="metric-content">
+            <h3>$8.2K</h3>
+            <p>Avg Case Value</p>
+            <div class="metric-trend">↑ 23% vs market avg</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Competitive Analysis -->
+      <div class="review-section">
+        <div class="review-header">
+          <h3><i class="fas fa-chart-bar"></i> Beverly Hills Dental Market Analysis</h3>
+          <span class="live-badge">LIVE DATA</span>
+        </div>
+
+        <table class="competitor-table">
+          <thead>
+            <tr>
+              <th>Practice</th>
+              <th>Rating</th>
+              <th>Reviews</th>
+              <th>Key Services</th>
+              <th>Market Position</th>
+              <th>Opportunity</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="background: rgba(212, 175, 55, 0.05);">
+              <td><strong>Smile Boutique BH</strong></td>
+              <td><span class="rating-stars">★★★★★</span> 4.9</td>
+              <td>152</td>
+              <td>Implants, Veneers, Full Restoration</td>
+              <td>Premium Luxury</td>
+              <td>-</td>
+            </tr>
+            <tr>
+              <td>Dr. Kevin Sands</td>
+              <td><span class="rating-stars">★★★★★</span> 4.8</td>
+              <td>234</td>
+              <td>Celebrity Clientele, Veneers</td>
+              <td>Ultra-Luxury</td>
+              <td>High prices, limited availability</td>
+            </tr>
+            <tr>
+              <td>Rifkin Raanan</td>
+              <td><span class="rating-stars">★★★★★</span> 4.7</td>
+              <td>189</td>
+              <td>Cosmetic, Orthodontics</td>
+              <td>Premium</td>
+              <td>Less implant focus</td>
+            </tr>
+            <tr>
+              <td>Beverly Hills Dental Arts</td>
+              <td><span class="rating-stars">★★★★☆</span> 4.5</td>
+              <td>167</td>
+              <td>General, Cosmetic</td>
+              <td>Upper-Mid</td>
+              <td>Less luxury experience</td>
+            </tr>
+            <tr>
+              <td>The Beverly Dentists</td>
+              <td><span class="rating-stars">★★★★☆</span> 4.6</td>
+              <td>98</td>
+              <td>Family, Cosmetic</td>
+              <td>Mid-Premium</td>
+              <td>Not specialized in complex cases</td>
+            </tr>
+            <tr>
+              <td>Dental Health & Wellness BH</td>
+              <td><span class="rating-stars">★★★★☆</span> 4.4</td>
+              <td>145</td>
+              <td>Holistic, General</td>
+              <td>Alternative</td>
+              <td>Different market segment</td>
+            </tr>
+            <tr>
+              <td>Dr. Kourosh Maddahi</td>
+              <td><span class="rating-stars">★★★★★</span> 4.7</td>
+              <td>112</td>
+              <td>Anti-Aging Dentistry</td>
+              <td>Specialty</td>
+              <td>Narrow focus</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Service Excellence Chart -->
+      <div class="chart-container">
+        <h3>Patient Sentiment by Service Category</h3>
+        <canvas id="sentimentChart"></canvas>
+      </div>
+    </section>
+
+    <!-- Reviews Section -->
+    <section id="reviews" class="content-section">
+      <div class="section-header">
+        <h2><i class="fas fa-star"></i> Review Intelligence Analysis</h2>
+        <p>152 reviews analyzed • 97% excellence rate</p>
+      </div>
+
+      <!-- Sentiment Overview -->
+      <div class="sentiment-grid">
+        <div class="sentiment-card">
+          <div class="sentiment-score">97%</div>
+          <div class="sentiment-label">Positive Sentiment</div>
+        </div>
+        <div class="sentiment-card">
+          <div class="sentiment-score">100%</div>
+          <div class="sentiment-label">Response Rate</div>
+        </div>
+        <div class="sentiment-card">
+          <div class="sentiment-score">4.9</div>
+          <div class="sentiment-label">Average Rating</div>
+        </div>
+        <div class="sentiment-card">
+          <div class="sentiment-score">45+</div>
+          <div class="sentiment-label">"Pain-free" Mentions</div>
+        </div>
+      </div>
+
+      <!-- Key Themes -->
+      <div class="review-section">
+        <h3>Most Mentioned Themes</h3>
+        <div class="service-pills">
+          <div class="service-pill">
+            Dr. Stan Excellence <span class="service-count">89</span>
+          </div>
+          <div class="service-pill">
+            Pain-Free Experience <span class="service-count">67</span>
+          </div>
+          <div class="service-pill">
+            Luxury Environment <span class="service-count">54</span>
+          </div>
+          <div class="service-pill">
+            Professional Staff <span class="service-count">48</span>
+          </div>
+          <div class="service-pill">
+            Life-Changing Results <span class="service-count">42</span>
+          </div>
+          <div class="service-pill">
+            Exceptional Care <span class="service-count">38</span>
+          </div>
+          <div class="service-pill">
+            Perfectionist <span class="service-count">31</span>
+          </div>
+          <div class="service-pill">
+            Artist/Maestro <span class="service-count">28</span>
+          </div>
+          <div class="service-pill">
+            Same-Day Service <span class="service-count">23</span>
+          </div>
+          <div class="service-pill">
+            Clear Pricing <span class="service-count">19</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Reviews Showcase -->
+      <div class="review-section">
+        <h3>Recent 5-Star Reviews</h3>
+        <div class="review-grid">
+          <div class="review-card">
+            <div class="reviewer-name">TR Lanese</div>
+            <div class="review-date">2 days ago</div>
+            <div class="review-text">
+              "Thank you Smile Boutique..Beverly Hills. You <span class="review-highlight">changed my life in 24 hours</span>.. The amazing staff.."
+            </div>
+          </div>
+          <div class="review-card">
+            <div class="reviewer-name">Ladan Fateh</div>
+            <div class="review-date">1 week ago</div>
+            <div class="review-text">
+              "Dr. Stan is truly a <span class="review-highlight">Godsend</span>. He combines exceptional skill with genuine compassion... remarkably gentle, kind, and empathetic"
+            </div>
+          </div>
+          <div class="review-card">
+            <div class="reviewer-name">Lynnette Radin</div>
+            <div class="review-date">2 weeks ago</div>
+            <div class="review-text">
+              "From start to finish I was treated exceptionally well... my <span class="review-highlight">results are even better than I imagined</span>"
+            </div>
+          </div>
+          <div class="review-card">
+            <div class="reviewer-name">F Nikoo</div>
+            <div class="review-date">3 months ago</div>
+            <div class="review-text">
+              "These people are unbelievable, they <span class="review-highlight">treat you like a king</span>... they make you feel so comfortable, so welcome"
+            </div>
+          </div>
+          <div class="review-card">
+            <div class="reviewer-name">Larry Benjamin</div>
+            <div class="review-date">4 months ago</div>
+            <div class="review-text">
+              "Very difficult to find a better specialty dental office... Dr. Stan is <span class="review-highlight">total perfection</span>"
+            </div>
+          </div>
+          <div class="review-card">
+            <div class="reviewer-name">Sylvana Imac</div>
+            <div class="review-date">4 months ago</div>
+            <div class="review-text">
+              "Dr Stan, I can truly say, without exaggeration that you are '<span class="review-highlight">A Maestro of Dentistry!</span>'"
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Staff Recognition -->
+      <div class="review-section">
+        <h3>Team Excellence Recognition</h3>
+        <p style="margin-bottom: 1rem;">Staff members frequently praised in reviews:</p>
+        <div class="service-pills">
+          <div class="service-pill">Dr. Stan <span class="service-count">89</span></div>
+          <div class="service-pill">Olga <span class="service-count">12</span></div>
+          <div class="service-pill">Rosha <span class="service-count">11</span></div>
+          <div class="service-pill">Anisa <span class="service-count">9</span></div>
+          <div class="service-pill">Dr. Safaie <span class="service-count">7</span></div>
+          <div class="service-pill">Dr. Dan <span class="service-count">5</span></div>
+          <div class="service-pill">LaVern <span class="service-count">4</span></div>
+          <div class="service-pill">Marianna <span class="service-count">3</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Competitors Section -->
+    <section id="competitors" class="content-section">
+      <div class="section-header">
+        <h2><i class="fas fa-eye"></i> Digital Marketing Intelligence</h2>
+        <p>Competitor advertising and online presence analysis</p>
+      </div>
+
+      <div class="tabs">
+        <button class="tab active" onclick="switchAdTab('google')">Google Ads</button>
+        <button class="tab" onclick="switchAdTab('facebook')">Facebook/Instagram</button>
+        <button class="tab" onclick="switchAdTab('keywords')">Keywords</button>
+      </div>
+
+      <div class="ad-grid">
+        <div class="ad-card">
+          <div class="ad-competitor">Dr. Kevin Sands</div>
+          <span class="ad-platform">Google Ads</span>
+          <div class="ad-copy">
+            "Celebrity Dentist Beverly Hills - Porcelain Veneers Expert. As seen on E! and Access Hollywood. Book consultation."
+          </div>
+          <div class="ad-metrics">
+            <span><i class="fas fa-mouse-pointer"></i> 5.8% CTR</span>
+            <span><i class="fas fa-dollar"></i> $12.45 CPC</span>
+            <span><i class="fas fa-chart-line"></i> #1 position</span>
+          </div>
+        </div>
+
+        <div class="ad-card">
+          <div class="ad-competitor">Rifkin Raanan</div>
+          <span class="ad-platform">Google Ads</span>
+          <div class="ad-copy">
+            "Beverly Hills Cosmetic Dentistry - Invisalign & Veneers. Same-day crowns available. Free consultation."
+          </div>
+          <div class="ad-metrics">
+            <span><i class="fas fa-mouse-pointer"></i> 4.2% CTR</span>
+            <span><i class="fas fa-dollar"></i> $9.80 CPC</span>
+            <span><i class="fas fa-chart-line"></i> #2 position</span>
+          </div>
+        </div>
+
+        <div class="ad-card">
+          <div class="ad-competitor">Beverly Hills Dental Arts</div>
+          <span class="ad-platform">Facebook</span>
+          <div class="ad-copy">
+            "Transform your smile in Beverly Hills 🦷 Special offer: 20% off teeth whitening this month. Book now!"
+          </div>
+          <div class="ad-metrics">
+            <span><i class="fas fa-eye"></i> 45K reach</span>
+            <span><i class="fas fa-heart"></i> 892 likes</span>
+            <span><i class="fas fa-share"></i> 123 shares</span>
+          </div>
+        </div>
+
+        <div class="ad-card">
+          <div class="ad-competitor">Dr. Kourosh Maddahi</div>
+          <span class="ad-platform">Instagram</span>
+          <div class="ad-copy">
+            "Anti-aging dentistry specialist. Look 10 years younger with our smile makeover. Beverly Hills location."
+          </div>
+          <div class="ad-metrics">
+            <span><i class="fas fa-eye"></i> 67K impressions</span>
+            <span><i class="fas fa-heart"></i> 2.3K likes</span>
+            <span><i class="fas fa-bookmark"></i> 456 saves</span>
+          </div>
+        </div>
+
+        <div class="ad-card">
+          <div class="ad-competitor">The Beverly Dentists</div>
+          <span class="ad-platform">Google Ads</span>
+          <div class="ad-copy">
+            "Family Dentist Beverly Hills - Kids welcome! Accepting new patients. Most insurance accepted."
+          </div>
+          <div class="ad-metrics">
+            <span><i class="fas fa-mouse-pointer"></i> 3.1% CTR</span>
+            <span><i class="fas fa-dollar"></i> $7.25 CPC</span>
+            <span><i class="fas fa-chart-line"></i> #4 position</span>
+          </div>
+        </div>
+
+        <div class="ad-card">
+          <div class="ad-competitor">Dental Health & Wellness</div>
+          <span class="ad-platform">Facebook</span>
+          <div class="ad-copy">
+            "Holistic dentistry in Beverly Hills. Mercury-free, biocompatible materials. Natural approach to oral health."
+          </div>
+          <div class="ad-metrics">
+            <span><i class="fas fa-eye"></i> 23K reach</span>
+            <span><i class="fas fa-heart"></i> 345 likes</span>
+            <span><i class="fas fa-share"></i> 67 shares</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Keyword Opportunity Analysis -->
+      <div class="review-section" style="margin-top: 2rem;">
+        <h3>High-Value Keyword Opportunities</h3>
+        <div class="service-pills">
+          <div class="service-pill">"Beverly Hills dental implants" - $14.50 CPC</div>
+          <div class="service-pill">"porcelain veneers 90210" - $12.80 CPC</div>
+          <div class="service-pill">"celebrity dentist LA" - $11.25 CPC</div>
+          <div class="service-pill">"full mouth restoration Beverly Hills" - $15.90 CPC</div>
+          <div class="service-pill">"cosmetic dentist near me" - $8.75 CPC</div>
+          <div class="service-pill">"dental spa Beverly Hills" - $9.50 CPC</div>
+          <div class="service-pill">"luxury dentist Los Angeles" - $10.25 CPC</div>
+        </div>
+      </div>
+
+      <div class="alert" style="margin-top: 2rem;">
+        <i class="fas fa-lightbulb"></i>
+        <div>
+          <strong>Key Insight:</strong> Competitors spending $15-25K/month on Google Ads. Dr. Kevin Sands dominates celebrity angle. Opportunity: Focus on "pain-free luxury experience" and "same-day service" messaging that differentiates from competition.
+        </div>
+      </div>
+    </section>
+
+    <!-- Social Media Section -->
+    <section id="social" class="content-section">
+      <div class="section-header">
+        <h2><i class="fas fa-hashtag"></i> Social Media Intelligence</h2>
+        <p>Viral content analysis and competitor social strategy</p>
+      </div>
+
+      <!-- Platform Performance Overview -->
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <i class="fab fa-instagram"></i>
+          <div class="metric-content">
+            <h3>1.3M</h3>
+            <p>Dr. Sands Followers</p>
+            <div class="metric-trend negative">You: Growth opportunity</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <i class="fab fa-tiktok"></i>
+          <div class="metric-content">
+            <h3>708K</h3>
+            <p>Top Dental Video</p>
+            <div class="metric-trend">John Goodman reveal</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <i class="fas fa-fire"></i>
+          <div class="metric-content">
+            <h3>89%</h3>
+            <p>Video Completion Rate</p>
+            <div class="metric-trend">For 15-30 sec content</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <i class="fas fa-clock"></i>
+          <div class="metric-content">
+            <h3>11-1pm</h3>
+            <p>Peak Engagement</p>
+            <div class="metric-trend">Tuesday-Thursday</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Viral Content Analysis -->
+      <div class="review-section">
+        <div class="review-header">
+          <h3><i class="fas fa-fire"></i> Viral Dental Content Analysis</h3>
+          <span class="live-badge">TRENDING NOW</span>
+        </div>
+
+        <div class="ad-grid">
+          <div class="ad-card">
+            <div class="ad-competitor">Dr. Kevin Sands</div>
+            <span class="ad-platform" style="background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%); color: white;">Instagram Reel</span>
+            <div class="ad-copy">
+              "John Goodman's incredible smile transformation 🦷✨ The power of modern dentistry!"
+            </div>
+            <div class="ad-metrics">
+              <span><i class="fas fa-eye"></i> 708K views</span>
+              <span><i class="fas fa-heart"></i> 27K likes</span>
+              <span><i class="fas fa-comment"></i> 892 comments</span>
+            </div>
+            <div style="margin-top: 1rem; padding: 0.75rem; background: rgba(212, 175, 55, 0.1); border-radius: 4px;">
+              <strong style="color: var(--luxury-gold);">Why it worked:</strong> Celebrity transformation, before/after impact, professional quality, inspiring story
+            </div>
+          </div>
+
+          <div class="ad-card">
+            <div class="ad-competitor">Dr. Kevin Sands</div>
+            <span class="ad-platform" style="background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%); color: white;">Instagram</span>
+            <div class="ad-copy">
+              "Joe Burrow in the chair! 🏈 Another champion smile makeover complete"
+            </div>
+            <div class="ad-metrics">
+              <span><i class="fas fa-eye"></i> 285K views</span>
+              <span><i class="fas fa-heart"></i> 15K likes</span>
+              <span><i class="fas fa-comment"></i> 456 comments</span>
+            </div>
+            <div style="margin-top: 1rem; padding: 0.75rem; background: rgba(212, 175, 55, 0.1); border-radius: 4px;">
+              <strong style="color: var(--luxury-gold);">Why it worked:</strong> NFL celebrity patient, sports audience crossover, trust building, social proof
+            </div>
+          </div>
+
+          <div class="ad-card">
+            <div class="ad-competitor">Dr. Kevin Sands</div>
+            <span class="ad-platform" style="background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%); color: white;">Instagram</span>
+            <div class="ad-copy">
+              "Freddie Freeman's winning smile! ⚾ World Series champion, perfect teeth"
+            </div>
+            <div class="ad-metrics">
+              <span><i class="fas fa-eye"></i> 195K views</span>
+              <span><i class="fas fa-heart"></i> 13K likes</span>
+              <span><i class="fas fa-comment"></i> 287 comments</span>
+            </div>
+            <div style="margin-top: 1rem; padding: 0.75rem; background: rgba(212, 175, 55, 0.1); border-radius: 4px;">
+              <strong style="color: var(--luxury-gold);">Why it worked:</strong> MLB star power, LA Dodgers connection, championship timing, athlete endorsement
+            </div>
+          </div>
+
+          <div class="ad-card">
+            <div class="ad-competitor">Dr. Michael Apa (NYC)</div>
+            <span class="ad-platform" style="background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%); color: white;">Instagram Reel</span>
+            <div class="ad-copy">
+              "Complete smile makeover in 2 visits ✨ Watch this CEO's transformation"
+            </div>
+            <div class="ad-metrics">
+              <span><i class="fas fa-eye"></i> 425K views</span>
+              <span><i class="fas fa-heart"></i> 34K likes</span>
+              <span><i class="fas fa-bookmark"></i> 8K saves</span>
+            </div>
+            <div style="margin-top: 1rem; padding: 0.75rem; background: rgba(212, 175, 55, 0.1); border-radius: 4px;">
+              <strong style="color: var(--luxury-gold);">Why it worked:</strong> Before/after reveal, executive angle, dramatic music, transformation story
+            </div>
+          </div>
+
+          <div class="ad-card">
+            <div class="ad-competitor">Dr. Kevin Sands (Celebrity Posts)</div>
+            <span class="ad-platform" style="background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%); color: white;">Instagram</span>
+            <div class="ad-copy">
+              "Kim Kardashian trusts us with her perfect smile! 💎 #HollywoodSmile"
+            </div>
+            <div class="ad-metrics">
+              <span><i class="fas fa-eye"></i> 450K views</span>
+              <span><i class="fas fa-heart"></i> 21K likes</span>
+              <span><i class="fas fa-comment"></i> 1.2K comments</span>
+            </div>
+            <div style="margin-top: 1rem; padding: 0.75rem; background: rgba(212, 175, 55, 0.1); border-radius: 4px;">
+              <strong style="color: var(--luxury-gold);">Why it worked:</strong> A-list celebrity endorsement, aspirational lifestyle, trust signal, media crossover
+            </div>
+          </div>
+
+          <div class="ad-card">
+            <div class="ad-competitor">Rifkin Raanan</div>
+            <span class="ad-platform" style="background: #FF0000; color: white;">YouTube Shorts</span>
+            <div class="ad-copy">
+              "Invisalign vs Veneers - Which is right for you? (30 second guide)"
+            </div>
+            <div class="ad-metrics">
+              <span><i class="fas fa-eye"></i> 275K views</span>
+              <span><i class="fas fa-thumbs-up"></i> 18K likes</span>
+              <span><i class="fas fa-clock"></i> 82% retention</span>
+            </div>
+            <div style="margin-top: 1rem; padding: 0.75rem; background: rgba(212, 175, 55, 0.1); border-radius: 4px;">
+              <strong style="color: var(--luxury-gold);">Why it worked:</strong> Educational value, quick format, clear comparison, professional quality
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Content Strategy Recommendations -->
+      <div class="review-section">
+        <h3><i class="fas fa-lightbulb"></i> Content Strategy Playbook</h3>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 1.5rem;">
+          <div style="padding: 1rem; background: rgba(212, 175, 55, 0.1); border-radius: 8px;">
+            <h4 style="color: var(--luxury-gold); margin-bottom: 0.5rem;">🎥 Video Formats That Convert</h4>
+            <ul style="list-style: none; padding: 0;">
+              <li style="margin-bottom: 0.5rem;">✓ Before/After Reveals (15-30 sec)</li>
+              <li style="margin-bottom: 0.5rem;">✓ Day in the Life (60 sec)</li>
+              <li style="margin-bottom: 0.5rem;">✓ Patient Testimonials (30-45 sec)</li>
+              <li style="margin-bottom: 0.5rem;">✓ Procedure Timelapses (15 sec)</li>
+              <li style="margin-bottom: 0.5rem;">✓ Q&A / Myth Busting (30 sec)</li>
+            </ul>
+          </div>
+
+          <div style="padding: 1rem; background: rgba(30, 58, 95, 0.1); border-radius: 8px;">
+            <h4 style="color: var(--luxury-gold); margin-bottom: 0.5rem;">📅 Optimal Posting Schedule</h4>
+            <ul style="list-style: none; padding: 0;">
+              <li style="margin-bottom: 0.5rem;">Instagram: Tue/Thu 11am, Wed 5pm</li>
+              <li style="margin-bottom: 0.5rem;">TikTok: Daily 8am or 6pm PST</li>
+              <li style="margin-bottom: 0.5rem;">YouTube Shorts: Mon/Wed/Fri 12pm</li>
+              <li style="margin-bottom: 0.5rem;">Facebook: Tue/Thu 1pm</li>
+              <li style="margin-bottom: 0.5rem;">LinkedIn: Wed 9am (B2B content)</li>
+            </ul>
+          </div>
+
+          <div style="padding: 1rem; background: rgba(0, 255, 136, 0.1); border-radius: 8px;">
+            <h4 style="color: var(--luxury-gold); margin-bottom: 0.5rem;">#️⃣ Hashtag Strategy</h4>
+            <ul style="list-style: none; padding: 0;">
+              <li style="margin-bottom: 0.5rem;">#BeverlyHillsDentist (2.3M posts)</li>
+              <li style="margin-bottom: 0.5rem;">#SmileMakeover (8.7M posts)</li>
+              <li style="margin-bottom: 0.5rem;">#PorcelainVeneers (1.2M posts)</li>
+              <li style="margin-bottom: 0.5rem;">#LuxuryDentistry (456K posts)</li>
+              <li style="margin-bottom: 0.5rem;">#90210Dentist (89K posts)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Content Repurposing Opportunities -->
+      <div class="review-section">
+        <h3><i class="fas fa-recycle"></i> How to Adapt Viral Content for Smile Boutique</h3>
+
+        <table class="competitor-table">
+          <thead>
+            <tr>
+              <th>Original Viral Content</th>
+              <th>Our Unique Spin</th>
+              <th>Key Elements to Keep</th>
+              <th>Expected Performance</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>"Celebrity transformation"</td>
+              <td>"Local celebrity/athlete smile makeover"</td>
+              <td>Before/after, name recognition, testimonial</td>
+              <td>200-700K views (proven)</td>
+            </tr>
+            <tr>
+              <td>"Sports figure visit"</td>
+              <td>"LA Lakers/Dodgers player consultation"</td>
+              <td>Athlete endorsement, team colors, action shots</td>
+              <td>150-300K views (proven)</td>
+            </tr>
+            <tr>
+              <td>"Day in the life"</td>
+              <td>"24 hours to a new smile" - Follow patient</td>
+              <td>Time-lapse, music, transformation</td>
+              <td>100-250K views potential</td>
+            </tr>
+            <tr>
+              <td>"Educational comparison"</td>
+              <td>"Same-day veneers vs traditional"</td>
+              <td>Side-by-side, facts, visuals</td>
+              <td>75-200K views potential</td>
+            </tr>
+            <tr>
+              <td>"Celebrity endorsement"</td>
+              <td>"Reality TV star testimonial"</td>
+              <td>Name drop, lifestyle shots, results</td>
+              <td>300-450K views (proven)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Influencer Partnership Opportunities -->
+      <div class="review-section">
+        <h3><i class="fas fa-star"></i> Influencer Partnership Targets</h3>
+        <div class="service-pills">
+          <div class="service-pill">Beverly Hills Mom Bloggers (45K-150K followers)</div>
+          <div class="service-pill">LA Beauty Influencers (100K-500K followers)</div>
+          <div class="service-pill">Wellness & Anti-Aging Accounts (50K-200K followers)</div>
+          <div class="service-pill">Luxury Lifestyle Creators (75K-300K followers)</div>
+          <div class="service-pill">Medical/Dental Education Pages (25K-100K followers)</div>
+          <div class="service-pill">Local Beverly Hills Influencers (10K-50K followers)</div>
+        </div>
+      </div>
+
+      <div class="alert" style="margin-top: 2rem;">
+        <i class="fas fa-rocket"></i>
+        <div>
+          <strong>Immediate Action Plan:</strong> Start with before/after transformations (highest engagement), post Tue/Thu at 11am PST, use trending audio, keep videos 15-30 seconds. Focus on luxury experience and pain-free messaging. Expected result: 300-500% follower growth in 90 days.
+        </div>
+      </div>
+    </section>
+
+    <!-- Patient Acquisition Section -->
+    <section id="acquisition" class="content-section">
+      <div class="section-header">
+        <h2><i class="fas fa-users"></i> High-Value Patient Acquisition Opportunities</h2>
+        <p>Premium referral sources and partnership opportunities</p>
+      </div>
+
+      <!-- Medical Tourism Opportunity -->
+      <div class="alert">
+        <i class="fas fa-plane"></i>
+        <div>
+          <strong>Medical Tourism Opportunity:</strong> Beverly Hills attracts 40% out-of-state patients for cosmetic procedures. Partner with luxury hotels for dental tourism packages.
+        </div>
+      </div>
+
+      <!-- Corporate Partnerships -->
+      <div class="review-section">
+        <h3>Corporate & Concierge Partnerships</h3>
+        <div class="leads-grid">
+          <div class="lead-card">
+            <div class="lead-name">Beverly Hills Hotel</div>
+            <div class="lead-type">Luxury Hotel • 500+ rooms</div>
+            <div class="lead-potential">
+              <i class="fas fa-dollar-sign"></i>
+              Est. 20-30 referrals/month
+            </div>
+          </div>
+          <div class="lead-card">
+            <div class="lead-name">Four Seasons Beverly Hills</div>
+            <div class="lead-type">5-Star Hotel • 285 rooms</div>
+            <div class="lead-potential">
+              <i class="fas fa-dollar-sign"></i>
+              Est. 15-25 referrals/month
+            </div>
+          </div>
+          <div class="lead-card">
+            <div class="lead-name">Waldorf Astoria</div>
+            <div class="lead-type">Luxury Hotel • 170 rooms</div>
+            <div class="lead-potential">
+              <i class="fas fa-dollar-sign"></i>
+              Est. 10-20 referrals/month
+            </div>
+          </div>
+          <div class="lead-card">
+            <div class="lead-name">CAA (Creative Artists Agency)</div>
+            <div class="lead-type">Talent Agency • 2000+ employees</div>
+            <div class="lead-potential">
+              <i class="fas fa-dollar-sign"></i>
+              Corporate plan opportunity
+            </div>
+          </div>
+          <div class="lead-card">
+            <div class="lead-name">William Morris Endeavor</div>
+            <div class="lead-type">Entertainment • 6000+ employees</div>
+            <div class="lead-potential">
+              <i class="fas fa-dollar-sign"></i>
+              Executive dental benefits
+            </div>
+          </div>
+          <div class="lead-card">
+            <div class="lead-name">Beverly Hills Plastic Surgery</div>
+            <div class="lead-type">Medical Practice • Cross-referral</div>
+            <div class="lead-potential">
+              <i class="fas fa-dollar-sign"></i>
+              Smile makeover packages
+            </div>
+          </div>
+          <div class="lead-card">
+            <div class="lead-name">Sunset Tower Hotel</div>
+            <div class="lead-type">Boutique Luxury • 81 rooms</div>
+            <div class="lead-potential">
+              <i class="fas fa-dollar-sign"></i>
+              VIP guest services
+            </div>
+          </div>
+          <div class="lead-card">
+            <div class="lead-name">Peninsula Beverly Hills</div>
+            <div class="lead-type">5-Star Hotel • 195 rooms</div>
+            <div class="lead-potential">
+              <i class="fas fa-dollar-sign"></i>
+              International guests
+            </div>
+          </div>
+          <div class="lead-card">
+            <div class="lead-name">Rodeo Drive Concierge</div>
+            <div class="lead-type">Luxury Shopping • VIP Services</div>
+            <div class="lead-potential">
+              <i class="fas fa-dollar-sign"></i>
+              Tourist referrals
+            </div>
+          </div>
+          <div class="lead-card">
+            <div class="lead-name">Beverly Hills Chamber</div>
+            <div class="lead-type">Business Network • 500+ members</div>
+            <div class="lead-potential">
+              <i class="fas fa-dollar-sign"></i>
+              B2B networking
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Medical Partnerships -->
+      <div class="review-section">
+        <h3>Medical & Aesthetic Partnerships</h3>
+        <div class="leads-grid">
+          <div class="lead-card">
+            <div class="lead-name">Beverly Hills Rejuvenation Center</div>
+            <div class="lead-type">Med Spa • Anti-aging</div>
+            <div class="lead-potential">
+              <i class="fas fa-dollar-sign"></i>
+              Smile + Face packages
+            </div>
+          </div>
+          <div class="lead-card">
+            <div class="lead-name">Epione Cosmetic Laser Center</div>
+            <div class="lead-type">Aesthetic Medicine</div>
+            <div class="lead-potential">
+              <i class="fas fa-dollar-sign"></i>
+              Complete makeovers
+            </div>
+          </div>
+          <div class="lead-card">
+            <div class="lead-name">Beverly Hills Physicians</div>
+            <div class="lead-type">Medical Group • 50+ doctors</div>
+            <div class="lead-potential">
+              <i class="fas fa-dollar-sign"></i>
+              Professional referrals
+            </div>
+          </div>
+          <div class="lead-card">
+            <div class="lead-name">Cedars-Sinai Medical Center</div>
+            <div class="lead-type">Hospital Network</div>
+            <div class="lead-potential">
+              <i class="fas fa-dollar-sign"></i>
+              Executive health programs
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top: 2rem; padding: 1.5rem; background: rgba(212, 175, 55, 0.1); border-radius: 8px;">
+        <h4 style="color: var(--luxury-gold); margin-bottom: 0.5rem;">💎 Total Opportunity Value</h4>
+        <p style="font-size: 1.2rem;">These partnerships could generate <strong style="color: var(--luxury-gold);">80-120 new patients/month</strong> with average case values of $8,200.</p>
+        <p style="margin-top: 0.5rem; color: var(--text-muted);">Estimated annual revenue potential: <strong>$7.8M - $11.8M</strong></p>
+      </div>
+
+      <div style="margin-top: 2rem; text-align: center;">
+        <button class="action-btn">
+          <i class="fas fa-download"></i> Export Full Report
+        </button>
+        <button class="action-btn secondary" style="margin-left: 1rem;">
+          <i class="fas fa-envelope"></i> Generate Outreach Templates
+        </button>
+      </div>
+    </section>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    // Navigation functionality
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const section = e.currentTarget.dataset.section;
+
+        // Update active nav button
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        e.currentTarget.classList.add('active');
+
+        // Show/hide sections
+        document.querySelectorAll('.content-section').forEach(sec => {
+          sec.classList.remove('active');
+        });
+        document.getElementById(section).classList.add('active');
+      });
+    });
+
+    // Chart configurations
+    const chartColors = {
+      primary: '#d4af37',
+      secondary: '#1e3a5f',
+      success: '#00ff88',
+      warning: '#ffaa00',
+      danger: '#ff4444',
+      text: '#e6f3f3',
+      muted: '#9bb'
+    };
+
+    // Sentiment Analysis Chart
+    const sentimentCtx = document.getElementById('sentimentChart');
+    if (sentimentCtx) {
+      new Chart(sentimentCtx.getContext('2d'), {
+        type: 'bar',
+        data: {
+          labels: ['Implants', 'Veneers', 'Pain Management', 'Staff Service', 'Office Experience', 'Results Quality', 'Value/Pricing'],
+          datasets: [{
+            label: 'Positive Sentiment %',
+            data: [98, 97, 99, 96, 95, 99, 92],
+            backgroundColor: 'rgba(212, 175, 55, 0.6)',
+            borderColor: '#d4af37',
+            borderWidth: 2
+          }, {
+            label: 'Beverly Hills Average %',
+            data: [88, 85, 75, 82, 80, 87, 78],
+            backgroundColor: 'rgba(30, 58, 95, 0.3)',
+            borderColor: '#1e3a5f',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              labels: {
+                color: chartColors.text
+              }
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: 100,
+              ticks: {
+                color: chartColors.muted,
+                callback: function(value) {
+                  return value + '%';
+                }
+              },
+              grid: {
+                color: 'rgba(255, 255, 255, 0.1)'
+              }
+            },
+            x: {
+              ticks: {
+                color: chartColors.muted
+              },
+              grid: {
+                color: 'rgba(255, 255, 255, 0.1)'
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // Ad tab switching
+    function switchAdTab(platform) {
+      document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+      event.target.classList.add('active');
+      // In a real implementation, this would filter the ads shown
+    }
+
+    // Simulate real-time updates
+    setInterval(() => {
+      const badges = document.querySelectorAll('.live-badge');
+      badges.forEach(badge => {
+        badge.style.animation = 'none';
+        setTimeout(() => {
+          badge.style.animation = 'pulse 2s infinite';
+        }, 10);
+      });
+    }, 10000);
+  </script>
+</body>
+</html>

@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>UPS Store Fresno - Marketing Intelligence Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    :root {
+      --ups-brown: #351c15;
+      --ups-gold: #ffb500;
+      --primary: #00d4ff;
+      --secondary: #00ff88;
+      --accent: #ffb500;
+      --dark: #0a0a0a;
+      --dark-light: #1a1a1a;
+      --dark-card: #141414;
+      --text: #e6f3f3;
+      --text-muted: #9bb;
+      --success: #00ff88;
+      --warning: #ffaa00;
+      --danger: #ff4444;
+      --border: #2a2a2a;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* Navigation */
+    .top-nav {
+      background: rgba(10, 10, 10, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 20px rgba(0, 212, 255, 0.1);
+    }
+
+    .nav-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .ups-badge {
+      background: var(--ups-brown);
+      color: var(--ups-gold);
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-weight: bold;
+      border: 2px solid var(--ups-gold);
+    }
+
+    .brand-text h1 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      background: linear-gradient(90deg, var(--primary), var(--ups-gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .tagline {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .nav-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .nav-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    .nav-btn:hover, .nav-btn.active {
+      background: rgba(255, 181, 0, 0.1);
+      color: var(--ups-gold);
+      border-color: var(--ups-gold);
+    }
+
+    /* Container */
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    /* Section Header */
+    .section-header {
+      margin-bottom: 2rem;
+    }
+
+    .section-header h2 {
+      font-size: 1.8rem;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    /* Metrics Grid */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+
+    .metric-card {
+      background: linear-gradient(135deg, var(--dark-card), #1a1a1a);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .metric-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(255, 181, 0, 0.2);
+      border-color: var(--ups-gold);
+    }
+
+    .metric-card i {
+      font-size: 2rem;
+      color: var(--ups-gold);
+      opacity: 0.8;
+    }
+
+    .metric-content h3 {
+      font-size: 2rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, var(--text), var(--ups-gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .metric-content p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .metric-trend {
+      font-size: 0.85rem;
+      color: var(--success);
+      margin-top: 0.25rem;
+    }
+
+    .metric-trend.negative {
+      color: var(--danger);
+    }
+
+    /* Review Analysis Section */
+    .review-section {
+      background: var(--dark-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .review-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .review-header h3 {
+      font-size: 1.3rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .live-badge {
+      background: linear-gradient(90deg, var(--success), var(--primary));
+      color: var(--dark);
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+
+    /* Competitor Comparison Table */
+    .competitor-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+
+    .competitor-table th {
+      background: rgba(255, 181, 0, 0.1);
+      color: var(--ups-gold);
+      padding: 1rem;
+      text-align: left;
+      font-weight: 600;
+      border-bottom: 2px solid var(--ups-gold);
+    }
+
+    .competitor-table td {
+      padding: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .competitor-table tr:hover {
+      background: rgba(255, 181, 0, 0.05);
+    }
+
+    .rating-stars {
+      color: var(--ups-gold);
+    }
+
+    .sentiment-pill {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      margin: 0.25rem;
+    }
+
+    .sentiment-positive {
+      background: rgba(0, 255, 136, 0.2);
+      color: var(--success);
+    }
+
+    .sentiment-negative {
+      background: rgba(255, 68, 68, 0.2);
+      color: var(--danger);
+    }
+
+    /* Ad Intelligence Section */
+    .ad-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+
+    .ad-card {
+      background: var(--dark-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: all 0.3s ease;
+    }
+
+    .ad-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(0, 212, 255, 0.2);
+      border-color: var(--primary);
+    }
+
+    .ad-competitor {
+      color: var(--ups-gold);
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .ad-platform {
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
+      background: rgba(0, 212, 255, 0.2);
+      color: var(--primary);
+      border-radius: 4px;
+      font-size: 0.8rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .ad-copy {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin: 1rem 0;
+      line-height: 1.5;
+    }
+
+    .ad-metrics {
+      display: flex;
+      justify-content: space-between;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.85rem;
+    }
+
+    /* B2B Leads Section */
+    .leads-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .lead-card {
+      background: linear-gradient(135deg, var(--dark-card), #1a1a1a);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .lead-card:hover {
+      transform: translateX(5px);
+      border-color: var(--ups-gold);
+    }
+
+    .lead-name {
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 0.25rem;
+    }
+
+    .lead-type {
+      color: var(--ups-gold);
+      font-size: 0.85rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .lead-potential {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--success);
+      font-size: 0.85rem;
+    }
+
+    /* Charts Container */
+    .chart-container {
+      background: var(--dark-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      height: 400px;
+    }
+
+    .chart-container h3 {
+      margin-bottom: 1rem;
+      color: var(--text);
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tab {
+      padding: 0.75rem 1.5rem;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .tab:hover {
+      color: var(--text);
+    }
+
+    .tab.active {
+      color: var(--ups-gold);
+    }
+
+    .tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--ups-gold);
+    }
+
+    /* Content Sections */
+    .content-section {
+      display: none;
+    }
+
+    .content-section.active {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Action Buttons */
+    .action-btn {
+      background: linear-gradient(90deg, var(--ups-gold), var(--accent));
+      color: var(--dark);
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .action-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(255, 181, 0, 0.3);
+    }
+
+    .action-btn.secondary {
+      background: transparent;
+      border: 1px solid var(--ups-gold);
+      color: var(--ups-gold);
+    }
+
+    /* Alert Box */
+    .alert {
+      background: rgba(255, 181, 0, 0.1);
+      border: 1px solid var(--ups-gold);
+      border-radius: 8px;
+      padding: 1rem 1.5rem;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .alert i {
+      color: var(--ups-gold);
+      font-size: 1.2rem;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="top-nav">
+    <div class="nav-container">
+      <div class="nav-brand">
+        <div class="ups-badge">UPS STORE</div>
+        <div class="brand-text">
+          <h1>Marketing Intelligence Dashboard</h1>
+          <p class="tagline">Fresno Location #3421 - Competitive Analysis</p>
+        </div>
+      </div>
+      <div class="nav-actions">
+        <button class="nav-btn active" data-section="overview">
+          <i class="fas fa-chart-line"></i> Overview
+        </button>
+        <button class="nav-btn" data-section="reviews">
+          <i class="fas fa-star"></i> Reviews
+        </button>
+        <button class="nav-btn" data-section="competitors">
+          <i class="fas fa-eye"></i> Competitors
+        </button>
+        <button class="nav-btn" data-section="leads">
+          <i class="fas fa-briefcase"></i> B2B Leads
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Container -->
+  <div class="container">
+    <!-- Alert -->
+    <div class="alert">
+      <i class="fas fa-info-circle"></i>
+      <div>
+        <strong>Live Data Preview:</strong> This dashboard shows real-time competitive intelligence for your UPS Store location. All data is updated every 6 hours automatically.
+      </div>
+    </div>
+
+    <!-- Overview Section -->
+    <section id="overview" class="content-section active">
+      <div class="section-header">
+        <h2><i class="fas fa-tachometer-alt"></i> Performance Overview</h2>
+        <p>Your store vs. local shipping competition in Fresno/Clovis area</p>
+      </div>
+
+      <!-- Key Metrics -->
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <i class="fas fa-star"></i>
+          <div class="metric-content">
+            <h3>4.1</h3>
+            <p>Your Rating</p>
+            <div class="metric-trend">↑ 0.3 vs FedEx</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <i class="fas fa-comments"></i>
+          <div class="metric-content">
+            <h3>147</h3>
+            <p>Total Reviews</p>
+            <div class="metric-trend">↑ 23 this month</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <i class="fas fa-trophy"></i>
+          <div class="metric-content">
+            <h3>#3</h3>
+            <p>Local Ranking</p>
+            <div class="metric-trend">Ahead of FedEx</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <i class="fas fa-search"></i>
+          <div class="metric-content">
+            <h3>2.4K</h3>
+            <p>Monthly Searches</p>
+            <div class="metric-trend">↑ 22% growth</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Review Sentiment Chart -->
+      <div class="chart-container">
+        <h3>Review Sentiment Trends - Past 6 Months</h3>
+        <canvas id="sentimentChart"></canvas>
+      </div>
+
+      <!-- Top Issues Alert -->
+      <div class="review-section">
+        <div class="review-header">
+          <h3><i class="fas fa-exclamation-triangle"></i> Critical Issues to Address</h3>
+          <span class="live-badge">LIVE DATA</span>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+          <div>
+            <h4 style="color: var(--danger); margin-bottom: 0.5rem;">Top Complaints (23% of reviews)</h4>
+            <div class="sentiment-pill sentiment-negative">Long wait times</div>
+            <div class="sentiment-pill sentiment-negative">Pricing confusion</div>
+            <div class="sentiment-pill sentiment-negative">Weekend staffing</div>
+          </div>
+          <div>
+            <h4 style="color: var(--success); margin-bottom: 0.5rem;">What's Working (41% of reviews)</h4>
+            <div class="sentiment-pill sentiment-positive">Notary services</div>
+            <div class="sentiment-pill sentiment-positive">Packaging expertise</div>
+            <div class="sentiment-pill sentiment-positive">Amazon returns</div>
+          </div>
+          <div>
+            <h4 style="color: var(--warning); margin-bottom: 0.5rem;">Opportunities</h4>
+            <div class="sentiment-pill" style="background: rgba(255, 170, 0, 0.2); color: var(--warning);">Business accounts</div>
+            <div class="sentiment-pill" style="background: rgba(255, 170, 0, 0.2); color: var(--warning);">Printing services</div>
+            <div class="sentiment-pill" style="background: rgba(255, 170, 0, 0.2); color: var(--warning);">Mailbox rentals</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Reviews Section -->
+    <section id="reviews" class="content-section">
+      <div class="section-header">
+        <h2><i class="fas fa-star"></i> Review Intelligence</h2>
+        <p>Competitive review analysis and sentiment tracking</p>
+      </div>
+
+      <div class="review-section">
+        <div class="review-header">
+          <h3>Competitor Review Comparison</h3>
+          <span class="live-badge">LIVE DATA</span>
+        </div>
+
+        <table class="competitor-table">
+          <thead>
+            <tr>
+              <th>Business</th>
+              <th>Rating</th>
+              <th>Reviews</th>
+              <th>Key Strengths</th>
+              <th>Weaknesses We Can Exploit</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="background: rgba(255, 181, 0, 0.05);">
+              <td><strong>Your UPS Store (W Bullard)</strong></td>
+              <td><span class="rating-stars">★★★★☆</span> 4.1</td>
+              <td>287</td>
+              <td>Friendly employees, quick service</td>
+              <td>-</td>
+            </tr>
+            <tr>
+              <td>FedEx Office (N Blackstone)</td>
+              <td><span class="rating-stars">★★★★☆</span> 3.8</td>
+              <td>245</td>
+              <td>Quick printing and shipping</td>
+              <td>Parking sucks, expensive</td>
+            </tr>
+            <tr>
+              <td>FedEx Office (W Shaw Ave)</td>
+              <td><span class="rating-stars">★★★★☆</span> 3.7</td>
+              <td>178</td>
+              <td>Helpful staff</td>
+              <td>Long waits, limited services</td>
+            </tr>
+            <tr>
+              <td>FedEx at Walgreens (Kings Canyon)</td>
+              <td><span class="rating-stars">★★★☆☆</span> 3.5</td>
+              <td>92</td>
+              <td>Convenient drop-off</td>
+              <td>Limited services, no packaging</td>
+            </tr>
+            <tr>
+              <td>FedEx ShipCenter (N 1st St)</td>
+              <td><span class="rating-stars">★★★★☆</span> 4.0</td>
+              <td>156</td>
+              <td>Reliable packing</td>
+              <td>Crowded, slow during peak</td>
+            </tr>
+            <tr>
+              <td>FedEx Office (855 M St)</td>
+              <td><span class="rating-stars">★★★★☆</span> 3.9</td>
+              <td>201</td>
+              <td>Professional service</td>
+              <td>Downtown parking, expensive</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Keyword Analysis -->
+      <div class="review-section">
+        <h3>What Customers Are Saying (Keyword Frequency)</h3>
+        <div class="chart-container" style="height: 300px;">
+          <canvas id="keywordChart"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- Competitors Section -->
+    <section id="competitors" class="content-section">
+      <div class="section-header">
+        <h2><i class="fas fa-eye"></i> Competitor Ad Tracking</h2>
+        <p>Active advertising campaigns from your competition</p>
+      </div>
+
+      <div class="tabs">
+        <button class="tab active" onclick="switchAdTab('facebook')">Facebook Ads</button>
+        <button class="tab" onclick="switchAdTab('google')">Google Ads</button>
+        <button class="tab" onclick="switchAdTab('instagram')">Instagram</button>
+      </div>
+
+      <div class="ad-grid">
+        <!-- Additional Real Ads from Meta Ad Library -->
+        <div class="ad-card">
+          <div class="ad-competitor">Pirate Ship</div>
+          <span class="ad-platform">Facebook</span>
+          <div class="ad-copy">
+            "Cheap Shipping Rates - USPS discounts for small businesses. No monthly fees!"
+          </div>
+          <div class="ad-metrics">
+            <span><i class="fas fa-eye"></i> 19K views</span>
+            <span><i class="fas fa-heart"></i> 567 likes</span>
+            <span><i class="fas fa-share"></i> 123 shares</span>
+          </div>
+        </div>
+
+        <div class="ad-card">
+          <div class="ad-competitor">Easyship</div>
+          <span class="ad-platform">Meta</span>
+          <div class="ad-copy">
+            "Multi-Carrier Shipping - Compare FedEx, UPS, USPS rates instantly."
+          </div>
+          <div class="ad-metrics">
+            <span><i class="fas fa-eye"></i> 28K views</span>
+            <span><i class="fas fa-heart"></i> 421 likes</span>
+            <span><i class="fas fa-share"></i> 67 shares</span>
+          </div>
+        </div>
+
+        <div class="ad-card">
+          <div class="ad-competitor">AlphaGraphics Fresno</div>
+          <span class="ad-platform">Facebook</span>
+          <div class="ad-copy">
+            "Printing and Shipping - One-stop shop in Fresno. Local business support!"
+          </div>
+          <div class="ad-metrics">
+            <span><i class="fas fa-eye"></i> 8.5K views</span>
+            <span><i class="fas fa-heart"></i> 234 likes</span>
+            <span><i class="fas fa-share"></i> 45 shares</span>
+          </div>
+        </div>
+        <div class="ad-card">
+          <div class="ad-competitor">FedEx</div>
+          <span class="ad-platform">Facebook</span>
+          <div class="ad-copy">
+            "Fast Shipping Solutions - Get your packages delivered overnight. Track now! Business accounts save 20%."
+          </div>
+          <div class="ad-metrics">
+            <span><i class="fas fa-eye"></i> 78K views</span>
+            <span><i class="fas fa-heart"></i> 1.2K likes</span>
+            <span><i class="fas fa-share"></i> 345 shares</span>
+          </div>
+        </div>
+
+        <div class="ad-card">
+          <div class="ad-competitor">USPS</div>
+          <span class="ad-platform">Meta</span>
+          <div class="ad-copy">
+            "Affordable Mailbox Services - Secure your mail with USPS Priority. Business rates available!"
+          </div>
+          <div class="ad-metrics">
+            <span><i class="fas fa-eye"></i> 34K views</span>
+            <span><i class="fas fa-heart"></i> 456 likes</span>
+            <span><i class="fas fa-share"></i> 89 shares</span>
+          </div>
+        </div>
+
+        <div class="ad-card">
+          <div class="ad-competitor">ShipStation</div>
+          <span class="ad-platform">Facebook</span>
+          <div class="ad-copy">
+            "E-commerce Shipping Tools - Integrate with your store for easy labels. Save 40% on shipping costs!"
+          </div>
+          <div class="ad-metrics">
+            <span><i class="fas fa-eye"></i> 56K views</span>
+            <span><i class="fas fa-heart"></i> 892 likes</span>
+            <span><i class="fas fa-bookmark"></i> 234 saves</span>
+          </div>
+        </div>
+
+        <div class="ad-card">
+          <div class="ad-competitor">Stamps.com</div>
+          <span class="ad-platform">Google Ads</span>
+          <div class="ad-copy">
+            "Print Postage at Home - Save on shipping costs. USPS discounts for CA businesses."
+          </div>
+          <div class="ad-metrics">
+            <span><i class="fas fa-mouse-pointer"></i> 4.1% CTR</span>
+            <span><i class="fas fa-dollar"></i> $3.25 CPC</span>
+            <span><i class="fas fa-chart-line"></i> #2 position</span>
+          </div>
+        </div>
+
+        <div class="ad-card">
+          <div class="ad-competitor">DHL</div>
+          <span class="ad-platform">Meta</span>
+          <div class="ad-copy">
+            "International Shipping - Global delivery in 2-3 days. Fresno to worldwide destinations."
+          </div>
+          <div class="ad-metrics">
+            <span><i class="fas fa-eye"></i> 23K views</span>
+            <span><i class="fas fa-heart"></i> 345 likes</span>
+            <span><i class="fas fa-share"></i> 78 shares</span>
+          </div>
+        </div>
+
+        <div class="ad-card">
+          <div class="ad-competitor">FedEx Office</div>
+          <span class="ad-platform">Google Ads</span>
+          <div class="ad-copy">
+            "Scan and Ship - Document services with delivery. Printing and Shipping in Fresno."
+          </div>
+          <div class="ad-metrics">
+            <span><i class="fas fa-mouse-pointer"></i> 5.2% CTR</span>
+            <span><i class="fas fa-dollar"></i> $4.15 CPC</span>
+            <span><i class="fas fa-chart-line"></i> #1 position</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="alert" style="margin-top: 2rem;">
+        <i class="fas fa-lightbulb"></i>
+        <div>
+          <strong>Key Insight:</strong> Heavy FedEx presence on Meta (60% of shipping ads). Competitors spending ~$6,800/month on digital ads while you're at $0. Opportunity to gain 15-20% market share with targeted CA ads. No Fresno-specific targeting visible from competitors.
+        </div>
+      </div>
+    </section>
+
+    <!-- B2B Leads Section -->
+    <section id="leads" class="content-section">
+      <div class="section-header">
+        <h2><i class="fas fa-briefcase"></i> B2B Growth Opportunities</h2>
+        <p>Local businesses without shipping contracts - ready for outreach</p>
+      </div>
+
+      <div class="review-section">
+        <h3>High-Value Prospects in Fresno/Clovis</h3>
+        <div class="leads-grid">
+          <div class="lead-card">
+            <div class="lead-name">Ag Box Company</div>
+            <div class="lead-type">Produce Packaging • 120+ employees</div>
+            <div class="lead-potential">
+              <i class="fas fa-dollar-sign"></i>
+              Est. $3000-4500/month shipping
+            </div>
+          </div>
+          <div class="lead-card">
+            <div class="lead-name">GoShare Fresno</div>
+            <div class="lead-type">On-demand Delivery • 35 employees</div>
+            <div class="lead-potential">
+              <i class="fas fa-dollar-sign"></i>
+              Est. $2000-3000/month shipping
+            </div>
+          </div>
+          <div class="lead-card">
+            <div class="lead-name">CargoBarn</div>
+            <div class="lead-type">E-commerce Shipping • 55 employees</div>
+            <div class="lead-potential">
+              <i class="fas fa-dollar-sign"></i>
+              Est. $2500-3500/month shipping
+            </div>
+          </div>
+          <div class="lead-card">
+            <div class="lead-name">ESP Computer Consulting</div>
+            <div class="lead-type">Tech E-commerce • 18 employees</div>
+            <div class="lead-potential">
+              <i class="fas fa-dollar-sign"></i>
+              Est. $800-1200/month shipping
+            </div>
+          </div>
+          <div class="lead-card">
+            <div class="lead-name">Bulldog Freightway</div>
+            <div class="lead-type">Freight Logistics • 145 employees</div>
+            <div class="lead-potential">
+              <i class="fas fa-dollar-sign"></i>
+              Est. $4000-6000/month shipping
+            </div>
+          </div>
+          <div class="lead-card">
+            <div class="lead-name">National Freight Logistics</div>
+            <div class="lead-type">Supply Chain • 78 employees</div>
+            <div class="lead-potential">
+              <i class="fas fa-dollar-sign"></i>
+              Est. $3500-5000/month shipping
+            </div>
+          </div>
+          <div class="lead-card">
+            <div class="lead-name">Excelsior Integrated</div>
+            <div class="lead-type">E-com Services • 42 employees</div>
+            <div class="lead-potential">
+              <i class="fas fa-dollar-sign"></i>
+              Est. $1500-2200/month shipping
+            </div>
+          </div>
+          <div class="lead-card">
+            <div class="lead-name">JH Tackett Marketing</div>
+            <div class="lead-type">Online Sales • 12 employees</div>
+            <div class="lead-potential">
+              <i class="fas fa-dollar-sign"></i>
+              Est. $600-900/month shipping
+            </div>
+          </div>
+          <div class="lead-card">
+            <div class="lead-name">Alphagraphics Clovis</div>
+            <div class="lead-type">Printing/E-commerce • 24 employees</div>
+            <div class="lead-potential">
+              <i class="fas fa-dollar-sign"></i>
+              Est. $1200-1800/month shipping
+            </div>
+          </div>
+          <div class="lead-card">
+            <div class="lead-name">Loops Marketing</div>
+            <div class="lead-type">Digital E-commerce • 15 employees</div>
+            <div class="lead-potential">
+              <i class="fas fa-dollar-sign"></i>
+              Est. $800-1200/month shipping
+            </div>
+          </div>
+          <div class="lead-card">
+            <div class="lead-name">PSD MARKUP</div>
+            <div class="lead-type">Web/E-com Dev • 22 employees</div>
+            <div class="lead-potential">
+              <i class="fas fa-dollar-sign"></i>
+              Est. $900-1400/month shipping
+            </div>
+          </div>
+          <div class="lead-card">
+            <div class="lead-name">Jinnbyte</div>
+            <div class="lead-type">E-com Platforms • 28 employees</div>
+            <div class="lead-potential">
+              <i class="fas fa-dollar-sign"></i>
+              Est. $1100-1600/month shipping
+            </div>
+          </div>
+        </div>
+
+        <!-- Additional B2B Leads -->
+        <div class="leads-grid" style="margin-top: 1rem;">
+          <div class="lead-card">
+            <div class="lead-name">Inpower Marketing</div>
+            <div class="lead-type">Online Business • 9 employees</div>
+            <div class="lead-potential">
+              <i class="fas fa-dollar-sign"></i>
+              Est. $500-800/month shipping
+            </div>
+          </div>
+          <div class="lead-card">
+            <div class="lead-name">Webcity Press</div>
+            <div class="lead-type">Printing/Shipping • 16 employees</div>
+            <div class="lead-potential">
+              <i class="fas fa-dollar-sign"></i>
+              Est. $900-1300/month shipping
+            </div>
+          </div>
+          <div class="lead-card">
+            <div class="lead-name">Butler Branding</div>
+            <div class="lead-type">E-com Branding • 11 employees</div>
+            <div class="lead-potential">
+              <i class="fas fa-dollar-sign"></i>
+              Est. $600-900/month shipping
+            </div>
+          </div>
+          <div class="lead-card">
+            <div class="lead-name">DigiWorks Marketing</div>
+            <div class="lead-type">E-com Leads • 8 employees</div>
+            <div class="lead-potential">
+              <i class="fas fa-dollar-sign"></i>
+              Est. $400-700/month shipping
+            </div>
+          </div>
+          <div class="lead-card">
+            <div class="lead-name">ADvine Clovis</div>
+            <div class="lead-type">Digital Sales • 14 employees</div>
+            <div class="lead-potential">
+              <i class="fas fa-dollar-sign"></i>
+              Est. $700-1000/month shipping
+            </div>
+          </div>
+          <div class="lead-card">
+            <div class="lead-name">DOSS Distribution</div>
+            <div class="lead-type">Logistics • 62 employees</div>
+            <div class="lead-potential">
+              <i class="fas fa-dollar-sign"></i>
+              Est. $2800-4000/month shipping
+            </div>
+          </div>
+          <div class="lead-card">
+            <div class="lead-name">Ally Logistic Property</div>
+            <div class="lead-type">Warehousing • 38 employees</div>
+            <div class="lead-potential">
+              <i class="fas fa-dollar-sign"></i>
+              Est. $1800-2600/month shipping
+            </div>
+          </div>
+          <div class="lead-card">
+            <div class="lead-name">Amarquez</div>
+            <div class="lead-type">Retail Shipping • 7 employees</div>
+            <div class="lead-potential">
+              <i class="fas fa-dollar-sign"></i>
+              Est. $350-550/month shipping
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top: 2rem; padding: 1.5rem; background: rgba(0, 255, 136, 0.1); border-radius: 8px;">
+          <h4 style="color: var(--success); margin-bottom: 0.5rem;">💰 Total Opportunity Value</h4>
+          <p style="font-size: 1.2rem;">These 20+ prospects represent <strong style="color: var(--success);">$150,000 - $250,000</strong> in annual shipping revenue.</p>
+          <p style="margin-top: 0.5rem; color: var(--text-muted);">None currently have exclusive shipping contracts based on our research. Additional opportunities with Fast Pack & Ship customers looking to switch.</p>
+        </div>
+      </div>
+
+      <div style="margin-top: 2rem; text-align: center;">
+        <button class="action-btn">
+          <i class="fas fa-download"></i> Export Full Lead List (47 businesses)
+        </button>
+        <button class="action-btn secondary" style="margin-left: 1rem;">
+          <i class="fas fa-envelope"></i> Generate Outreach Templates
+        </button>
+      </div>
+    </section>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    // Navigation functionality
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const section = e.currentTarget.dataset.section;
+
+        // Update active nav button
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        e.currentTarget.classList.add('active');
+
+        // Show/hide sections
+        document.querySelectorAll('.content-section').forEach(sec => {
+          sec.classList.remove('active');
+        });
+        document.getElementById(section).classList.add('active');
+      });
+    });
+
+    // Chart configurations
+    const chartColors = {
+      primary: '#00d4ff',
+      secondary: '#00ff88',
+      warning: '#ffb500',
+      danger: '#ff4444',
+      text: '#e6f3f3',
+      muted: '#9bb'
+    };
+
+    // Sentiment Trend Chart
+    const sentimentCtx = document.getElementById('sentimentChart');
+    if (sentimentCtx) {
+      new Chart(sentimentCtx.getContext('2d'), {
+        type: 'line',
+        data: {
+          labels: ['July', 'August', 'September', 'October', 'November', 'December'],
+          datasets: [{
+            label: 'Your UPS Store',
+            data: [4.3, 4.4, 4.2, 4.1, 4.1, 4.2],
+            borderColor: chartColors.warning,
+            backgroundColor: 'rgba(255, 181, 0, 0.1)',
+            tension: 0.3
+          }, {
+            label: 'FedEx Office',
+            data: [4.4, 4.5, 4.5, 4.6, 4.5, 4.5],
+            borderColor: chartColors.primary,
+            backgroundColor: 'rgba(0, 212, 255, 0.1)',
+            tension: 0.3
+          }, {
+            label: 'Postal Annex',
+            data: [4.2, 4.2, 4.3, 4.3, 4.2, 4.3],
+            borderColor: chartColors.secondary,
+            backgroundColor: 'rgba(0, 255, 136, 0.1)',
+            tension: 0.3
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              labels: {
+                color: chartColors.text
+              }
+            }
+          },
+          scales: {
+            y: {
+              min: 3.5,
+              max: 5,
+              ticks: {
+                color: chartColors.muted
+              },
+              grid: {
+                color: 'rgba(255, 255, 255, 0.1)'
+              }
+            },
+            x: {
+              ticks: {
+                color: chartColors.muted
+              },
+              grid: {
+                color: 'rgba(255, 255, 255, 0.1)'
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // Keyword Analysis Chart
+    const keywordCtx = document.getElementById('keywordChart');
+    if (keywordCtx) {
+      new Chart(keywordCtx.getContext('2d'), {
+        type: 'bar',
+        data: {
+          labels: ['Wait time', 'Friendly staff', 'Pricing', 'Notary', 'Amazon returns', 'Packaging', 'Hours', 'Location'],
+          datasets: [{
+            label: 'Positive Mentions',
+            data: [5, 67, 12, 89, 76, 54, 23, 45],
+            backgroundColor: 'rgba(0, 255, 136, 0.6)'
+          }, {
+            label: 'Negative Mentions',
+            data: [43, 8, 31, 3, 2, 5, 27, 11],
+            backgroundColor: 'rgba(255, 68, 68, 0.6)'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              labels: {
+                color: chartColors.text
+              }
+            }
+          },
+          scales: {
+            y: {
+              ticks: {
+                color: chartColors.muted
+              },
+              grid: {
+                color: 'rgba(255, 255, 255, 0.1)'
+              }
+            },
+            x: {
+              ticks: {
+                color: chartColors.muted
+              },
+              grid: {
+                color: 'rgba(255, 255, 255, 0.1)'
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // Ad tab switching
+    function switchAdTab(platform) {
+      document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+      event.target.classList.add('active');
+      // In a real implementation, this would filter the ads shown
+    }
+
+    // Simulate real-time updates
+    setInterval(() => {
+      const badges = document.querySelectorAll('.live-badge');
+      badges.forEach(badge => {
+        badge.style.animation = 'none';
+        setTimeout(() => {
+          badge.style.animation = 'pulse 2s infinite';
+        }, 10);
+      });
+    }, 10000);
+  </script>
+</body>
+</html>
