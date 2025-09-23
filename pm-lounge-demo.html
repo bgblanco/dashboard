@@ -1,0 +1,1414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PM Lounge Fresno - Content Intelligence Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    :root {
+      --lounge-purple: #6B46C1;
+      --lounge-gold: #FFD700;
+      --lounge-black: #1a1a1a;
+      --smoke-gray: #2d2d2d;
+      --accent-amber: #FFA500;
+      --primary: #6B46C1;
+      --secondary: #FFD700;
+      --dark: #0a0a0a;
+      --dark-light: #1a1a1a;
+      --dark-card: #141414;
+      --text: #e6f3f3;
+      --text-muted: #9bb;
+      --success: #00ff88;
+      --warning: #ffaa00;
+      --danger: #ff4444;
+      --border: #2a2a2a;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      font-family: 'Helvetica Neue', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a0a2e 100%);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* Navigation */
+    .top-nav {
+      background: rgba(10, 10, 10, 0.98);
+      backdrop-filter: blur(20px);
+      border-bottom: 2px solid var(--lounge-gold);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 4px 30px rgba(107, 70, 193, 0.3);
+    }
+
+    .nav-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .lounge-badge {
+      background: linear-gradient(135deg, var(--lounge-purple), var(--lounge-gold));
+      color: white;
+      padding: 0.75rem 1.25rem;
+      border-radius: 4px;
+      font-weight: 300;
+      letter-spacing: 2px;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      box-shadow: 0 4px 15px rgba(107, 70, 193, 0.4);
+    }
+
+    .brand-text h1 {
+      font-size: 1.6rem;
+      font-weight: 300;
+      letter-spacing: 1px;
+      background: linear-gradient(90deg, var(--lounge-gold), var(--text));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .tagline {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-style: italic;
+      letter-spacing: 0.5px;
+    }
+
+    .nav-actions {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .nav-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      padding: 0.6rem 1.2rem;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+      letter-spacing: 0.5px;
+    }
+
+    .nav-btn:hover, .nav-btn.active {
+      background: rgba(107, 70, 193, 0.1);
+      color: var(--lounge-gold);
+      border-color: var(--lounge-gold);
+    }
+
+    /* Data Refresh Notice */
+    .data-refresh-notice {
+      background: rgba(107, 70, 193, 0.1);
+      border: 1px solid rgba(255, 215, 0, 0.3);
+      border-radius: 8px;
+      padding: 0.75rem 1.25rem;
+      margin: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-size: 0.9rem;
+    }
+
+    .refresh-timestamp {
+      color: var(--lounge-gold);
+      font-weight: 500;
+    }
+
+    .refresh-info {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    .refresh-icon {
+      color: var(--lounge-gold);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    /* Container */
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    /* Section Header */
+    .section-header {
+      margin-bottom: 2rem;
+    }
+
+    .section-header h2 {
+      font-size: 1.8rem;
+      font-weight: 300;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      letter-spacing: 1px;
+      color: var(--lounge-gold);
+    }
+
+    .section-subtitle {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Metrics Grid */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+
+    .metric-card {
+      background: linear-gradient(135deg, var(--dark-card), rgba(107, 70, 193, 0.05));
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      border-radius: 8px;
+      padding: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .metric-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(107, 70, 193, 0.2);
+      border-color: var(--lounge-gold);
+    }
+
+    .metric-card i {
+      font-size: 2rem;
+      color: var(--lounge-gold);
+      opacity: 0.9;
+    }
+
+    .metric-content h3 {
+      font-size: 2rem;
+      font-weight: 300;
+      background: linear-gradient(90deg, var(--text), var(--lounge-gold));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .metric-content p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      letter-spacing: 0.5px;
+    }
+
+    .metric-trend {
+      font-size: 0.85rem;
+      color: var(--success);
+      margin-top: 0.25rem;
+    }
+
+    .metric-trend.negative {
+      color: var(--danger);
+    }
+
+    .metric-trend.neutral {
+      color: var(--warning);
+    }
+
+    /* Content Sections */
+    .content-section {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .content-section.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Competitor Table */
+    .competitor-section {
+      background: var(--dark-card);
+      border: 1px solid rgba(107, 70, 193, 0.2);
+      border-radius: 8px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .competitor-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+
+    .competitor-table th {
+      background: rgba(107, 70, 193, 0.1);
+      color: var(--lounge-gold);
+      padding: 1rem;
+      text-align: left;
+      font-weight: 400;
+      letter-spacing: 0.5px;
+      border-bottom: 2px solid var(--lounge-gold);
+    }
+
+    .competitor-table td {
+      padding: 1rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    .competitor-table tr:hover {
+      background: rgba(107, 70, 193, 0.05);
+    }
+
+    .leader-badge {
+      background: linear-gradient(90deg, var(--lounge-gold), var(--accent-amber));
+      color: var(--dark);
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .gap-indicator {
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.85rem;
+    }
+
+    .gap-positive {
+      background: rgba(0, 255, 136, 0.1);
+      color: var(--success);
+    }
+
+    .gap-negative {
+      background: rgba(255, 68, 68, 0.1);
+      color: var(--danger);
+    }
+
+    /* Pattern Cards */
+    .pattern-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .pattern-card {
+      background: linear-gradient(135deg, rgba(107, 70, 193, 0.1), var(--dark-card));
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      border-radius: 8px;
+      padding: 1.5rem;
+      transition: all 0.3s ease;
+    }
+
+    .pattern-card:hover {
+      transform: scale(1.02);
+      box-shadow: 0 5px 20px rgba(107, 70, 193, 0.3);
+      border-color: var(--lounge-gold);
+    }
+
+    .pattern-title {
+      color: var(--lounge-gold);
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .pattern-performance {
+      background: rgba(0, 255, 136, 0.1);
+      color: var(--success);
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      margin-bottom: 0.5rem;
+      display: inline-block;
+    }
+
+    .pattern-examples {
+      color: var(--text);
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    /* Review Hooks */
+    .review-hooks-container {
+      background: var(--dark-card);
+      border: 1px solid rgba(107, 70, 193, 0.2);
+      border-radius: 8px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .word-cloud {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin: 1.5rem 0;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .word-cloud span {
+      display: inline-block;
+      padding: 0.5rem 1rem;
+      background: rgba(107, 70, 193, 0.1);
+      border: 1px solid rgba(255, 215, 0, 0.3);
+      border-radius: 20px;
+      color: var(--text);
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .word-cloud span:hover {
+      background: var(--lounge-purple);
+      color: var(--lounge-gold);
+      transform: scale(1.1);
+    }
+
+    .word-size-1 { font-size: 0.9rem; opacity: 0.7; }
+    .word-size-2 { font-size: 1.1rem; opacity: 0.85; }
+    .word-size-3 { font-size: 1.3rem; opacity: 0.95; }
+    .word-size-4 { font-size: 1.5rem; font-weight: 500; }
+    .word-size-5 { font-size: 1.8rem; font-weight: 600; color: var(--lounge-gold); }
+
+    /* Event FOMO */
+    .event-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .event-card {
+      background: linear-gradient(135deg, var(--dark-card), rgba(255, 215, 0, 0.02));
+      border: 1px solid rgba(107, 70, 193, 0.3);
+      border-radius: 8px;
+      padding: 1.5rem;
+      transition: all 0.3s ease;
+    }
+
+    .event-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(107, 70, 193, 0.3);
+      border-color: var(--lounge-gold);
+    }
+
+    .event-date {
+      color: var(--lounge-gold);
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 0.5rem;
+    }
+
+    .event-title {
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+      color: var(--text);
+    }
+
+    .event-fomo {
+      background: rgba(255, 170, 0, 0.1);
+      color: var(--warning);
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      display: inline-block;
+      margin-top: 0.5rem;
+    }
+
+    /* Creative Briefs */
+    .brief-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .brief-card {
+      background: linear-gradient(135deg, rgba(107, 70, 193, 0.1), var(--dark-card));
+      border: 2px solid rgba(255, 215, 0, 0.3);
+      border-radius: 12px;
+      padding: 2rem;
+      transition: all 0.3s ease;
+    }
+
+    .brief-card:hover {
+      box-shadow: 0 15px 40px rgba(107, 70, 193, 0.3);
+      transform: translateY(-5px);
+    }
+
+    .brief-title {
+      font-size: 1.4rem;
+      color: var(--lounge-gold);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .brief-why {
+      background: rgba(0, 255, 136, 0.1);
+      border-left: 3px solid var(--success);
+      padding: 0.75rem;
+      margin: 1rem 0;
+      color: var(--text);
+      font-size: 0.95rem;
+    }
+
+    .brief-section {
+      margin: 1.5rem 0;
+    }
+
+    .brief-section h4 {
+      color: var(--lounge-gold);
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .brief-section ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .brief-section li {
+      padding: 0.5rem 0;
+      color: var(--text);
+      font-size: 0.9rem;
+      border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+    }
+
+    .brief-section li:before {
+      content: "▸ ";
+      color: var(--lounge-gold);
+      font-weight: bold;
+      margin-right: 0.5rem;
+    }
+
+    .hashtag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .hashtag {
+      background: rgba(107, 70, 193, 0.2);
+      color: var(--text);
+      padding: 0.25rem 0.75rem;
+      border-radius: 15px;
+      font-size: 0.85rem;
+    }
+
+    /* Alerts */
+    .alerts-container {
+      margin-bottom: 2rem;
+    }
+
+    .alert-card {
+      background: var(--dark-card);
+      border-left: 4px solid var(--warning);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .alert-card.danger {
+      border-left-color: var(--danger);
+    }
+
+    .alert-card.success {
+      border-left-color: var(--success);
+    }
+
+    .alert-card:hover {
+      transform: translateX(5px);
+      box-shadow: 0 5px 15px rgba(107, 70, 193, 0.2);
+    }
+
+    .alert-icon {
+      font-size: 1.5rem;
+      color: var(--warning);
+    }
+
+    .alert-card.danger .alert-icon {
+      color: var(--danger);
+    }
+
+    .alert-card.success .alert-icon {
+      color: var(--success);
+    }
+
+    .alert-content h4 {
+      color: var(--text);
+      margin-bottom: 0.25rem;
+    }
+
+    .alert-content p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .alert-timestamp {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      margin-top: 0.25rem;
+    }
+
+    /* Footer */
+    .footer {
+      background: rgba(10, 10, 10, 0.98);
+      border-top: 1px solid rgba(255, 215, 0, 0.2);
+      margin-top: 4rem;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    .footer-brand {
+      color: var(--lounge-gold);
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .footer-text {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .nav-container {
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .nav-actions {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .metrics-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .pattern-grid,
+      .event-grid,
+      .brief-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Live indicator animation */
+    .live-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--success);
+      font-size: 0.85rem;
+      animation: blink 2s infinite;
+    }
+
+    .live-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--success);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="top-nav">
+    <div class="nav-container">
+      <div class="nav-brand">
+        <div class="lounge-badge">PM Lounge</div>
+        <div class="brand-text">
+          <h1>Content Intelligence Dashboard</h1>
+          <p class="tagline">Fresno's Premier Lounge • Viral Content Analytics</p>
+        </div>
+      </div>
+      <div class="nav-actions">
+        <button class="nav-btn active" data-section="kpis">
+          <i class="fas fa-chart-line"></i> KPIs
+        </button>
+        <button class="nav-btn" data-section="competitors">
+          <i class="fas fa-crosshairs"></i> Competitive
+        </button>
+        <button class="nav-btn" data-section="patterns">
+          <i class="fas fa-fire"></i> Viral Patterns
+        </button>
+        <button class="nav-btn" data-section="reviews">
+          <i class="fas fa-comments"></i> Reviews
+        </button>
+        <button class="nav-btn" data-section="events">
+          <i class="fas fa-calendar-alt"></i> Events
+        </button>
+        <button class="nav-btn" data-section="briefs">
+          <i class="fas fa-lightbulb"></i> Creative
+        </button>
+        <button class="nav-btn" data-section="alerts">
+          <i class="fas fa-bell"></i> Alerts
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Data Refresh Notice -->
+  <div class="data-refresh-notice">
+    <i class="fas fa-sync-alt refresh-icon"></i>
+    <div>
+      <span class="refresh-timestamp">Data Refreshed: September 22, 2025 12:00 AM PST</span>
+      <span class="refresh-info">• PM Lounge: 1,864 followers (Opening Soon) • 2K+ views = viral for <2K accounts • Real Fresno competitor data • Pre-launch metrics</span>
+    </div>
+  </div>
+
+  <!-- Main Container -->
+  <div class="container">
+
+    <!-- Executive KPIs Section -->
+    <section id="kpis" class="content-section active">
+      <div class="section-header">
+        <h2><i class="fas fa-tachometer-alt"></i> Executive KPIs</h2>
+        <p class="section-subtitle">High-level content performance snapshot across all platforms</p>
+      </div>
+
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <i class="fas fa-users"></i>
+          <div class="metric-content">
+            <h3>+89</h3>
+            <p>Weekly Follower Growth</p>
+            <div class="metric-trend">↑ Pre-launch momentum</div>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <i class="fas fa-calendar-check"></i>
+          <div class="metric-content">
+            <h3>3-4</h3>
+            <p>Posts Per Week</p>
+            <div class="metric-trend">Building anticipation</div>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <i class="fas fa-eye"></i>
+          <div class="metric-content">
+            <h3>450</h3>
+            <p>Average Views</p>
+            <div class="metric-trend">↑ Growing reach</div>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <i class="fas fa-bookmark"></i>
+          <div class="metric-content">
+            <h3>3.8%</h3>
+            <p>Engagement Rate</p>
+            <div class="metric-trend">↑ High for account size</div>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <i class="fas fa-fire-alt"></i>
+          <div class="metric-content">
+            <h3>1 in 12</h3>
+            <p>Posts Hit 2K+ Views</p>
+            <div class="metric-trend">↑ Viral for size</div>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <i class="fas fa-video"></i>
+          <div class="metric-content">
+            <h3>60/30/10</h3>
+            <p>Reels/Photos/Stories %</p>
+            <div class="metric-trend">Video-first strategy</div>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <i class="fas fa-trophy"></i>
+          <div class="metric-content">
+            <h3>Cocktails</h3>
+            <p>Top Content Theme</p>
+            <div class="metric-trend">↑ 2x avg engagement</div>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <i class="fas fa-heart"></i>
+          <div class="metric-content">
+            <h3>52</h3>
+            <p>Average Likes Per Post</p>
+            <div class="metric-trend">↑ Strong engagement</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Competitive Radar Section -->
+    <section id="competitors" class="content-section">
+      <div class="section-header">
+        <h2><i class="fas fa-crosshairs"></i> Competitive Radar</h2>
+        <p class="section-subtitle">Performance comparison vs top 3 Fresno lounges</p>
+      </div>
+
+      <div class="competitor-section">
+        <h3>Engagement Leaderboard</h3>
+        <table class="competitor-table">
+          <thead>
+            <tr>
+              <th>Venue</th>
+              <th>Followers</th>
+              <th>Avg Views</th>
+              <th>Avg Likes</th>
+              <th>Engagement Rate</th>
+              <th>Gap Analysis</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>PM Lounge</strong> <span class="leader-badge">OPENING SOON</span></td>
+              <td>1,864</td>
+              <td>450</td>
+              <td>52</td>
+              <td>3.8%</td>
+              <td>Building Community</td>
+            </tr>
+            <tr>
+              <td>Modernist</td>
+              <td>26,070</td>
+              <td>3.2K</td>
+              <td>177</td>
+              <td>0.68%</td>
+              <td>Target: 6 months</td>
+            </tr>
+            <tr>
+              <td>Quail State</td>
+              <td>19,316</td>
+              <td>2.8K</td>
+              <td>52</td>
+              <td>0.27%</td>
+              <td>Target: 12 months</td>
+            </tr>
+            <tr>
+              <td>Fairway Lounge</td>
+              <td>6,484</td>
+              <td>3.5K</td>
+              <td>75</td>
+              <td>1.16%</td>
+              <td>Next milestone</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3 style="margin-top: 2rem;">Top Performing Competitor Content</h3>
+        <div class="pattern-grid" style="margin-top: 1rem;">
+          <div class="pattern-card">
+            <div class="pattern-title">
+              <i class="fas fa-crown"></i> Modernist's Top Post
+            </div>
+            <div class="pattern-performance">28K views • 1,994 likes</div>
+            <p class="pattern-examples">Signature cocktail reveal. Behind-the-bar footage with ambient lighting. Premium presentation focus.</p>
+          </div>
+          <div class="pattern-card">
+            <div class="pattern-title">
+              <i class="fas fa-fire"></i> Fairway's Celebrity Night
+            </div>
+            <div class="pattern-performance">19K views • 780 likes</div>
+            <p class="pattern-examples">Vanderpump Rules bartender event. Celebrity guest appearances drive 10x normal engagement.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Viral Pattern Engine Section -->
+    <section id="patterns" class="content-section">
+      <div class="section-header">
+        <h2><i class="fas fa-fire"></i> Viral Pattern Engine</h2>
+        <p class="section-subtitle">Content patterns that consistently outperform</p>
+      </div>
+
+      <div class="pattern-grid">
+        <div class="pattern-card">
+          <div class="pattern-title">
+            <i class="fas fa-cocktail"></i> The 4 Variations Formula
+          </div>
+          <div class="pattern-performance">10K+ views potential</div>
+          <p class="pattern-examples">
+            <strong>Formula:</strong> Show 3-4 cocktail variations<br>
+            <strong>Example:</strong> "Our 3 Takes on the Old Fashioned"<br>
+            <strong>Hook:</strong> Quick montage in first 2 seconds<br>
+            <strong>Local Success:</strong> 8-12K views typical
+          </p>
+        </div>
+
+        <div class="pattern-card">
+          <div class="pattern-title">
+            <i class="fas fa-graduation-cap"></i> Bartender Education
+          </div>
+          <div class="pattern-performance">7-9K views benchmark</div>
+          <p class="pattern-examples">
+            <strong>Formula:</strong> "5 Cocktails Every Fresnan Should Know"<br>
+            <strong>Format:</strong> Quick 30-second tutorials<br>
+            <strong>Hook:</strong> "Level up your home bar"<br>
+            <strong>Engagement:</strong> 200-300 likes typical
+          </p>
+        </div>
+
+        <div class="pattern-card">
+          <div class="pattern-title">
+            <i class="fas fa-music"></i> Lounge Music Content
+          </div>
+          <div class="pattern-performance">5-8K views standard</div>
+          <p class="pattern-examples">
+            <strong>Formula:</strong> "Friday Night Vibes" playlist posts<br>
+            <strong>Format:</strong> 15-second ambiance shots + music<br>
+            <strong>Hook:</strong> Weekend mood setting content<br>
+            <strong>Success:</strong> 150-250 likes average
+          </p>
+        </div>
+
+        <div class="pattern-card">
+          <div class="pattern-title">
+            <i class="fas fa-blender"></i> Tropical Recipe Cards
+          </div>
+          <div class="pattern-performance">6-10K views average</div>
+          <p class="pattern-examples">
+            <strong>Formula:</strong> Ingredient list + 30s process<br>
+            <strong>Example:</strong> "Fresno Sunset Margarita"<br>
+            <strong>Include:</strong> Full recipe in caption<br>
+            <strong>Tags:</strong> #fresno559 #fresnodrinks
+          </p>
+        </div>
+
+        <div class="pattern-card">
+          <div class="pattern-title">
+            <i class="fas fa-champagne-glasses"></i> Million Dollar Drinks
+          </div>
+          <div class="pattern-performance">15K+ views peak</div>
+          <p class="pattern-examples">
+            <strong>Hook:</strong> "Our Best Selling Cocktail Revealed"<br>
+            <strong>Format:</strong> Behind-the-bar story<br>
+            <strong>Engagement:</strong> 400-600 likes peak<br>
+            <strong>Key:</strong> #fresnonightlife #559eats
+          </p>
+        </div>
+
+        <div class="pattern-card">
+          <div class="pattern-title">
+            <i class="fas fa-list-ol"></i> Busy Bar Recommendations
+          </div>
+          <div class="pattern-performance">4-6K views standard</div>
+          <p class="pattern-examples">
+            <strong>Format:</strong> "What to Order on Date Night"<br>
+            <strong>Structure:</strong> Quick recommendations<br>
+            <strong>Engagement:</strong> 100-200 likes typical<br>
+            <strong>Tags:</strong> #fresnodate #downtownfresno
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Review Hooks Section -->
+    <section id="reviews" class="content-section">
+      <div class="section-header">
+        <h2><i class="fas fa-comments"></i> Competitive Review Intelligence</h2>
+        <p class="section-subtitle">Real Fresno luxury bar insights from Google & Yelp data</p>
+      </div>
+
+      <div class="review-hooks-container">
+        <h3>Fresno Luxury Bar Review Themes</h3>
+        <div class="word-cloud">
+          <span class="word-size-5">custom cocktails</span>
+          <span class="word-size-4">men's study aesthetic</span>
+          <span class="word-size-3">vintage elegance</span>
+          <span class="word-size-4">no menu</span>
+          <span class="word-size-2">industrial-chic</span>
+          <span class="word-size-5">craft cocktails</span>
+          <span class="word-size-3">velvet chairs</span>
+          <span class="word-size-2">rooftop</span>
+          <span class="word-size-4">knowledgeable staff</span>
+          <span class="word-size-3">upscale</span>
+          <span class="word-size-2">live music</span>
+          <span class="word-size-3">intimate</span>
+          <span class="word-size-1">personalized drinks</span>
+          <span class="word-size-4">worth the price</span>
+          <span class="word-size-2">best in Fresno</span>
+        </div>
+
+        <h3 style="margin-top: 2rem;">Competitor Analysis & PM Lounge Opportunities</h3>
+        <div class="pattern-grid">
+          <div class="pattern-card">
+            <div class="pattern-title">
+              <i class="fas fa-trophy"></i> Top Competitors
+            </div>
+            <p class="pattern-examples">
+              <strong>Bespoke:</strong> 4.4★ • "Men's study aesthetic" • Custom cocktails<br>
+              <strong>Modernist:</strong> 4.5★ • 319 reviews • "Trendy, relaxed"<br>
+              <strong>The Red Room:</strong> 4.7★ • "Vintage elegance meets modern"<br>
+              <strong>Lucy's Lounge:</strong> 3.9★ • 131 reviews • Most expensive<br>
+              <strong>PM Lounge:</strong> Opening Soon • Private social club concept
+            </p>
+          </div>
+
+          <div class="pattern-card">
+            <div class="pattern-title">
+              <i class="fas fa-lightbulb"></i> PM Lounge Differentiators
+            </div>
+            <p class="pattern-examples">
+              • First private social club in Central Valley<br>
+              • More intimate than Modernist (26K followers)<br>
+              • Better value than Bespoke's pretense<br>
+              • Exclusive membership vs open venues<br>
+              • Curated experience vs mass appeal
+            </p>
+          </div>
+
+          <div class="pattern-card">
+            <div class="pattern-title">
+              <i class="fas fa-chart-line"></i> Market Positioning
+            </div>
+            <p class="pattern-examples">
+              <strong>Rankings in "Best Fresno Bars":</strong><br>
+              #1: Bespoke (multiple lists)<br>
+              #2: Modernist (upscale category)<br>
+              #3: The Library (unique bars)<br>
+              <strong>PM Lounge Target:</strong> Top 3 within 6 months
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Event FOMO Map Section -->
+    <section id="events" class="content-section">
+      <div class="section-header">
+        <h2><i class="fas fa-calendar-alt"></i> Event FOMO Map</h2>
+        <p class="section-subtitle">Event cadence analysis and FOMO content opportunities</p>
+      </div>
+
+      <div class="event-grid">
+        <div class="event-card">
+          <div class="event-date">Every Thursday</div>
+          <div class="event-title">Password Night</div>
+          <p>Secret password revealed on Instagram Stories at 6PM. First 50 get complimentary welcome cocktail.</p>
+          <div class="event-fomo">FOMO: "Only 12 spots left"</div>
+        </div>
+
+        <div class="event-card">
+          <div class="event-date">First Friday Monthly</div>
+          <div class="event-title">Members Preview</div>
+          <p>Black card holders get exclusive access to new menu items 24 hours before public launch.</p>
+          <div class="event-fomo">FOMO: "Members already tasting"</div>
+        </div>
+
+        <div class="event-card">
+          <div class="event-date">Monthly Guest Feature</div>
+          <div class="event-title">Guest Mixologist Series</div>
+          <p>Award-winning bartenders from LA/SF take over the bar for one night only.</p>
+          <div class="event-fomo">FOMO: "Last 8 seats available"</div>
+        </div>
+
+        <div class="event-card">
+          <div class="event-date">Saturday Nights</div>
+          <div class="event-title">DJ Sets</div>
+          <p>Live DJ from 9PM. Lounge transforms into sophisticated dance venue after 11PM.</p>
+          <div class="event-fomo">FOMO: "Tables booking fast"</div>
+        </div>
+
+        <div class="event-card">
+          <div class="event-date">Last Wednesday</div>
+          <div class="event-title">Industry Night</div>
+          <p>Service industry professionals receive 30% off. Network with Fresno's hospitality elite.</p>
+          <div class="event-fomo">FOMO: "Where bartenders drink"</div>
+        </div>
+
+        <div class="event-card">
+          <div class="event-date">Quarterly</div>
+          <div class="event-title">Cigar & Whiskey Pairing</div>
+          <p>Curated selection of rare whiskeys paired with premium cigars on the private patio.</p>
+          <div class="event-fomo">FOMO: "Sold out in 3 hours last time"</div>
+        </div>
+      </div>
+
+      <div class="pattern-card" style="margin-top: 2rem;">
+        <div class="pattern-title">
+          <i class="fas fa-bullhorn"></i> Optimal Announcement Timeline
+        </div>
+        <p class="pattern-examples">
+          <strong>2 weeks out:</strong> Save the date teaser<br>
+          <strong>1 week out:</strong> Full details reveal<br>
+          <strong>3 days out:</strong> "Limited spots" urgency<br>
+          <strong>Day of:</strong> "Tonight only" final push<br>
+          <strong>During:</strong> Live stories for next-time FOMO
+        </p>
+      </div>
+    </section>
+
+    <!-- Creative Briefs Section -->
+    <section id="briefs" class="content-section">
+      <div class="section-header">
+        <h2><i class="fas fa-lightbulb"></i> Creative Briefs</h2>
+        <p class="section-subtitle">Auto-generated content ideas based on performance data</p>
+      </div>
+
+      <div class="brief-grid">
+        <div class="brief-card">
+          <div class="brief-title">
+            <i class="fas fa-magic"></i> Opening Soon: Signature Cocktails
+          </div>
+          <div class="brief-why">
+            <strong>Why this works:</strong> Pre-launch reveals generate 3x engagement. Build anticipation with sneak peeks of your menu.
+          </div>
+
+          <div class="brief-section">
+            <h4>Content Structure</h4>
+            <ul>
+              <li>0-2s: Quick montage of all 4 cocktails</li>
+              <li>2-5s: Cocktail #1 - Classic version</li>
+              <li>5-8s: Cocktail #2 - Tropical twist</li>
+              <li>8-11s: Cocktail #3 - Premium upgrade</li>
+              <li>11-15s: Cocktail #4 - House special</li>
+            </ul>
+          </div>
+
+          <div class="brief-section">
+            <h4>Caption Template</h4>
+            <ul>
+              <li>"Coming Soon to PM Lounge: Our Signature [Cocktail] 🍸"</li>
+              <li>"Be among the first to try it"</li>
+              <li>End with: "DM for founding member access"</li>
+            </ul>
+          </div>
+
+          <div class="brief-section">
+            <h4>Hashtags (Data-Proven)</h4>
+            <div class="hashtag-list">
+              <span class="hashtag">#fresno559</span>
+              <span class="hashtag">#fresnonightlife</span>
+              <span class="hashtag">#downtownfresno</span>
+              <span class="hashtag">#cocktails</span>
+              <span class="hashtag">#pmlounge</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="brief-card">
+          <div class="brief-title">
+            <i class="fas fa-music"></i> Construction Progress Tours
+          </div>
+          <div class="brief-why">
+            <strong>Why this works:</strong> Behind-the-scenes content drives 2x engagement for pre-launch venues. Creates investment in your journey.
+          </div>
+
+          <div class="brief-section">
+            <h4>Content Format</h4>
+            <ul>
+              <li>Show construction progress weekly</li>
+              <li>Feature design elements being installed</li>
+              <li>Include text: "Opening Soon - Winter 2025"</li>
+              <li>Add waitlist signup link in bio</li>
+            </ul>
+          </div>
+
+          <div class="brief-section">
+            <h4>Caption Template</h4>
+            <ul>
+              <li>"Building Fresno's First Private Social Club 🏗️"</li>
+              <li>"Your exclusive preview inside"</li>
+              <li>Tags: #ComingSoon #FresnoNew #Exclusive</li>
+            </ul>
+          </div>
+
+          <div class="brief-section">
+            <h4>Proven Tags</h4>
+            <ul>
+              <li>#FresnoNightlife #559Music</li>
+              <li>#DowntownFresno #WeekendMood</li>
+              <li>Target: 200+ likes, 6K+ views</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="brief-card">
+          <div class="brief-title">
+            <i class="fas fa-crown"></i> Founding Member Benefits
+          </div>
+          <div class="brief-why">
+            <strong>Why this works:</strong> Exclusivity drives 4x engagement for private clubs. Limited availability creates urgency.
+          </div>
+
+          <div class="brief-section">
+            <h4>Content Ideas</h4>
+            <ul>
+              <li>"100 Founding Memberships Available"</li>
+              <li>"Member Benefits Revealed" series</li>
+              <li>"Why Join PM Lounge" testimonials</li>
+              <li>30-second member privilege highlights</li>
+            </ul>
+          </div>
+
+          <div class="brief-section">
+            <h4>Hashtag Formula</h4>
+            <ul>
+              <li>Primary: #fresno #fresnodrinks #559eats</li>
+              <li>Secondary: #cocktails #bartender</li>
+              <li>Target: 250+ likes, 7K+ views</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Alerts Section -->
+    <section id="alerts" class="content-section">
+      <div class="section-header">
+        <h2><i class="fas fa-bell"></i> Intelligence Alerts</h2>
+        <p class="section-subtitle">Proactive notifications and trend changes</p>
+      </div>
+
+      <div class="alerts-container">
+        <div class="alert-card danger">
+          <i class="fas fa-exclamation-triangle alert-icon"></i>
+          <div class="alert-content">
+            <h4>Competitor Spike Detected</h4>
+            <p>Modernist's latest post hit 1,994 likes (10x their average). Analyze their content strategy for premium cocktail presentations.</p>
+            <div class="alert-timestamp">2 hours ago</div>
+          </div>
+        </div>
+
+        <div class="alert-card">
+          <i class="fas fa-trending-up alert-icon"></i>
+          <div class="alert-content">
+            <h4>Trending Format Shift</h4>
+            <p>Short-form Reels (7-10 seconds) getting 35% more views locally. Adjust content strategy for quicker hooks.</p>
+            <div class="alert-timestamp">5 hours ago</div>
+          </div>
+        </div>
+
+        <div class="alert-card success">
+          <i class="fas fa-trophy alert-icon"></i>
+          <div class="alert-content">
+            <h4>Viral Threshold Reached</h4>
+            <p>Your "Opening Soon" post reached 2.1K views - excellent for pre-launch content. Continue building anticipation.</p>
+            <div class="alert-timestamp">Yesterday</div>
+          </div>
+        </div>
+
+        <div class="alert-card">
+          <i class="fas fa-clock alert-icon"></i>
+          <div class="alert-content">
+            <h4>Posting Gap Alert</h4>
+            <p>No posts in 2 days. Engagement drops 25% after 48 hours inactive. Post tonight to maintain momentum.</p>
+            <div class="alert-timestamp">1 day ago</div>
+          </div>
+        </div>
+
+        <div class="alert-card">
+          <i class="fas fa-hashtag alert-icon"></i>
+          <div class="alert-content">
+            <h4>Hashtag Opportunity</h4>
+            <p>#Fresno559 trending with low competition. Include in next 3 posts for estimated +2K reach boost.</p>
+            <div class="alert-timestamp">3 days ago</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="footer-brand">Powered by Sentinel Peak Solutions</div>
+    <div class="footer-text">
+      Content Intelligence Platform • Real-time data aggregation and analysis<br>
+      Instagram • TikTok • YouTube • Yelp • Google Maps • Facebook Events
+    </div>
+  </div>
+
+  <!-- JavaScript -->
+  <script>
+    // Tab switching functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      const navButtons = document.querySelectorAll('.nav-btn');
+      const sections = document.querySelectorAll('.content-section');
+
+      navButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          const targetSection = this.getAttribute('data-section');
+
+          // Update active button
+          navButtons.forEach(btn => btn.classList.remove('active'));
+          this.classList.add('active');
+
+          // Show target section
+          sections.forEach(section => {
+            section.classList.remove('active');
+            if (section.id === targetSection) {
+              section.classList.add('active');
+            }
+          });
+        });
+      });
+
+      // Animate numbers on scroll
+      const animateNumbers = () => {
+        const numbers = document.querySelectorAll('.metric-content h3');
+        numbers.forEach(num => {
+          const text = num.innerText;
+          if (text.includes('K') || text.includes('%') || text.includes('+') || text.includes('.')) {
+            // Already animated or contains special characters
+            return;
+          }
+        });
+      };
+
+      // Initialize animations
+      animateNumbers();
+
+      // Add hover effects to cards
+      const cards = document.querySelectorAll('.metric-card, .pattern-card, .event-card, .brief-card');
+      cards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+          this.style.transform = 'translateY(-3px)';
+        });
+        card.addEventListener('mouseleave', function() {
+          this.style.transform = 'translateY(0)';
+        });
+      });
+
+      // Simulate live updates
+      const updateTimestamp = () => {
+        const now = new Date();
+        const options = {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+          hour: 'numeric',
+          minute: '2-digit',
+          hour12: true,
+          timeZone: 'America/Los_Angeles'
+        };
+        const timestamp = now.toLocaleDateString('en-US', options) + ' PST';
+
+        const timestampElements = document.querySelectorAll('.refresh-timestamp');
+        timestampElements.forEach(el => {
+          if (el.textContent.includes('Data Refreshed:')) {
+            // Keep the original midnight time for the main refresh
+            return;
+          }
+        });
+      };
+
+      // Update every minute
+      setInterval(updateTimestamp, 60000);
+
+      // Add smooth scroll behavior
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+          e.preventDefault();
+          const target = document.querySelector(this.getAttribute('href'));
+          if (target) {
+            target.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start'
+            });
+          }
+        });
+      });
+
+      // Word cloud interaction
+      const wordCloudItems = document.querySelectorAll('.word-cloud span');
+      wordCloudItems.forEach(item => {
+        item.addEventListener('click', function() {
+          // Toggle selection
+          this.style.background = this.style.background === 'var(--lounge-purple)' ?
+            'rgba(107, 70, 193, 0.1)' : 'var(--lounge-purple)';
+        });
+      });
+
+      // Add subtle animations to alert cards
+      const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px'
+      };
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.style.animation = 'fadeIn 0.5s ease forwards';
+          }
+        });
+      }, observerOptions);
+
+      document.querySelectorAll('.alert-card').forEach(card => {
+        observer.observe(card);
+      });
+
+      // Live indicator pulsing
+      const createLiveIndicator = () => {
+        const indicators = document.querySelectorAll('.live-indicator, .live-dot');
+        indicators.forEach(indicator => {
+          setInterval(() => {
+            indicator.style.opacity = indicator.style.opacity === '1' ? '0.3' : '1';
+          }, 1000);
+        });
+      };
+
+      createLiveIndicator();
+
+      console.log('PM Lounge Dashboard initialized successfully');
+    });
+  </script>
+</body>
+</html>
