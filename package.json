@@ -1,0 +1,24 @@
+{
+  "name": "sps-ad-spy-dashboard",
+  "version": "1.0.0",
+  "description": "A comprehensive marketing intelligence dashboard that combines competitor analysis, AI-powered proposal generation, and workflow automation to deliver superior marketing results for clients.",
+  "main": "demo-data.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bgblanco/dashboard.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/bgblanco/dashboard/issues"
+  },
+  "homepage": "https://github.com/bgblanco/dashboard#readme",
+  "dependencies": {
+    "n8n-mcp": "^2.14.7"
+  }
+}

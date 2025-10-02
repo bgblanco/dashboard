@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Viral Content Analyzer - Sentinel Peak Solutions</title>
+  <link rel="stylesheet" href="viral-analyzer.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+<body>
+  <!-- Header -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand">
+        <img src="sps-logo.png" alt="Sentinel Peak Solutions" class="logo" />
+        <div class="brand-text">
+          <h1>Viral Content Analyzer</h1>
+          <p class="tagline">Decode viral content. Recreate success.</p>
+        </div>
+      </div>
+      <div class="connection-status" id="connectionStatus">
+        <i class="fas fa-circle"></i>
+        <span>Ready</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main App Container -->
+  <main class="app-main">
+    <div class="container">
+
+      <!-- Screen 1: Input Form -->
+      <section id="inputScreen" class="screen active">
+        <div class="screen-header">
+          <h2><i class="fas fa-rocket"></i> Analyze Viral Content</h2>
+          <p>Submit any viral content URL and get an AI-powered breakdown + remake strategy</p>
+        </div>
+
+        <div class="input-card">
+          <form id="analyzerForm">
+            <!-- Main URL Input -->
+            <div class="form-group">
+              <label for="contentUrl">
+                <i class="fas fa-link"></i> Content URL
+                <span class="required">*</span>
+              </label>
+              <input
+                type="url"
+                id="contentUrl"
+                placeholder="https://tiktok.com/@user/video/123... or Instagram, YouTube, Twitter/X"
+                required
+              />
+              <small>Paste the URL of the viral content you want to analyze</small>
+            </div>
+
+            <!-- Platform Selection -->
+            <div class="form-group">
+              <label for="platform">
+                <i class="fas fa-mobile-alt"></i> Platform
+              </label>
+              <select id="platform">
+                <option value="auto">Auto-detect</option>
+                <option value="tiktok">TikTok</option>
+                <option value="instagram">Instagram</option>
+                <option value="youtube">YouTube</option>
+                <option value="twitter">Twitter/X</option>
+                <option value="facebook">Facebook</option>
+                <option value="linkedin">LinkedIn</option>
+              </select>
+            </div>
+
+            <!-- Analysis Depth -->
+            <div class="form-group">
+              <label for="analysisDepth">
+                <i class="fas fa-sliders-h"></i> Analysis Depth
+              </label>
+              <select id="analysisDepth">
+                <option value="quick">Quick Analysis (~30 seconds)</option>
+                <option value="deep" selected>Deep Analysis (~2 minutes)</option>
+                <option value="comprehensive">Comprehensive (~5 minutes)</option>
+              </select>
+            </div>
+
+            <!-- Niche/Industry -->
+            <div class="form-group">
+              <label for="niche">
+                <i class="fas fa-tag"></i> Industry/Niche (Optional)
+              </label>
+              <input
+                type="text"
+                id="niche"
+                placeholder="e.g., Marketing, Fitness, Tech, Fashion"
+              />
+              <small>Helps tailor the remake strategy to your industry</small>
+            </div>
+
+            <!-- Competitor URLs -->
+            <div class="form-group">
+              <label for="competitors">
+                <i class="fas fa-users"></i> Compare with Competitors (Optional)
+              </label>
+              <textarea
+                id="competitors"
+                rows="3"
+                placeholder="Add up to 3 competitor content URLs (one per line)"
+              ></textarea>
+              <small>We'll analyze gaps and opportunities vs. competitors</small>
+            </div>
+
+            <!-- Advanced Options Toggle -->
+            <div class="advanced-toggle">
+              <button type="button" id="advancedToggle">
+                <i class="fas fa-cog"></i> Advanced Options
+                <i class="fas fa-chevron-down"></i>
+              </button>
+            </div>
+
+            <!-- Advanced Options Panel -->
+            <div id="advancedOptions" class="advanced-panel hidden">
+              <div class="form-group">
+                <label>
+                  <input type="checkbox" id="includeTranscript" checked />
+                  Extract full transcript/captions
+                </label>
+              </div>
+              <div class="form-group">
+                <label>
+                  <input type="checkbox" id="includeMetrics" checked />
+                  Fetch engagement metrics
+                </label>
+              </div>
+              <div class="form-group">
+                <label>
+                  <input type="checkbox" id="includeAudio" checked />
+                  Analyze audio/music strategy
+                </label>
+              </div>
+              <div class="form-group">
+                <label>
+                  <input type="checkbox" id="generateScript" checked />
+                  Generate complete remake script
+                </label>
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn-primary">
+              <i class="fas fa-magic"></i> Analyze Content
+            </button>
+          </form>
+        </div>
+
+        <!-- Feature Highlights -->
+        <div class="feature-grid">
+          <div class="feature-card">
+            <i class="fas fa-search-plus"></i>
+            <h3>Deep Analysis</h3>
+            <p>AI-powered breakdown of every viral element</p>
+          </div>
+          <div class="feature-card">
+            <i class="fas fa-lightbulb"></i>
+            <h3>Remake Strategy</h3>
+            <p>Step-by-step guide to recreate success</p>
+          </div>
+          <div class="feature-card">
+            <i class="fas fa-chart-line"></i>
+            <h3>Metrics Included</h3>
+            <p>Engagement data and viral scoring</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Screen 2: Processing -->
+      <section id="processingScreen" class="screen">
+        <div class="processing-container">
+          <div class="processing-header">
+            <div class="spinner"></div>
+            <h2>Analyzing Your Content</h2>
+            <p id="processingStatus">Initializing analysis...</p>
+          </div>
+
+          <div class="progress-steps">
+            <div class="step" id="step1">
+              <div class="step-icon">
+                <i class="fas fa-download"></i>
+              </div>
+              <div class="step-content">
+                <h4>Scraping Content</h4>
+                <p>Fetching video, captions, and metadata</p>
+              </div>
+              <div class="step-status">
+                <i class="fas fa-spinner fa-spin"></i>
+              </div>
+            </div>
+
+            <div class="step" id="step2">
+              <div class="step-icon">
+                <i class="fas fa-brain"></i>
+              </div>
+              <div class="step-content">
+                <h4>AI Analysis</h4>
+                <p>Identifying viral factors and patterns</p>
+              </div>
+              <div class="step-status">
+                <i class="fas fa-spinner fa-spin"></i>
+              </div>
+            </div>
+
+            <div class="step" id="step3">
+              <div class="step-icon">
+                <i class="fas fa-file-alt"></i>
+              </div>
+              <div class="step-content">
+                <h4>Generating Strategy</h4>
+                <p>Creating your custom remake plan</p>
+              </div>
+              <div class="step-status">
+                <i class="fas fa-spinner fa-spin"></i>
+              </div>
+            </div>
+
+            <div class="step" id="step4">
+              <div class="step-icon">
+                <i class="fas fa-check-circle"></i>
+              </div>
+              <div class="step-content">
+                <h4>Finalizing Results</h4>
+                <p>Preparing your comprehensive report</p>
+              </div>
+              <div class="step-status">
+                <i class="fas fa-spinner fa-spin"></i>
+              </div>
+            </div>
+          </div>
+
+          <div class="processing-meta">
+            <p><i class="fas fa-clock"></i> Estimated time: <span id="estimatedTime">~2 minutes</span></p>
+            <p><i class="fas fa-server"></i> Execution ID: <span id="executionId">Pending...</span></p>
+          </div>
+
+          <button id="cancelBtn" class="btn-secondary">
+            <i class="fas fa-times"></i> Cancel Analysis
+          </button>
+        </div>
+      </section>
+
+      <!-- Screen 3: Results -->
+      <section id="resultsScreen" class="screen">
+        <div class="results-header">
+          <h2><i class="fas fa-trophy"></i> Analysis Complete</h2>
+          <div class="results-actions">
+            <button id="downloadPdfBtn" class="btn-action">
+              <i class="fas fa-download"></i> Download PDF
+            </button>
+            <button id="analyzeAnotherBtn" class="btn-action">
+              <i class="fas fa-plus"></i> Analyze Another
+            </button>
+          </div>
+        </div>
+
+        <div class="results-grid">
+
+          <!-- Content Overview Card -->
+          <div class="result-card overview-card">
+            <h3><i class="fas fa-info-circle"></i> Content Overview</h3>
+            <div class="overview-content">
+              <div class="content-preview">
+                <img id="contentThumbnail" src="" alt="Content thumbnail" />
+                <div class="viral-badge" id="viralScore">
+                  <span class="score-number">0</span>
+                  <span class="score-label">Viral Score</span>
+                </div>
+              </div>
+              <div class="content-meta">
+                <p><strong>Creator:</strong> <span id="creatorName">Loading...</span></p>
+                <p><strong>Platform:</strong> <span id="platformName">Loading...</span></p>
+                <p><strong>Posted:</strong> <span id="postDate">Loading...</span></p>
+                <div class="metrics-row">
+                  <div class="metric">
+                    <i class="fas fa-eye"></i>
+                    <span id="viewCount">0</span>
+                    <small>Views</small>
+                  </div>
+                  <div class="metric">
+                    <i class="fas fa-heart"></i>
+                    <span id="likeCount">0</span>
+                    <small>Likes</small>
+                  </div>
+                  <div class="metric">
+                    <i class="fas fa-share"></i>
+                    <span id="shareCount">0</span>
+                    <small>Shares</small>
+                  </div>
+                  <div class="metric">
+                    <i class="fas fa-comment"></i>
+                    <span id="commentCount">0</span>
+                    <small>Comments</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Viral Breakdown Card -->
+          <div class="result-card breakdown-card">
+            <h3><i class="fas fa-microscope"></i> Viral Factor Breakdown</h3>
+            <div id="breakdownContent">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+          <!-- Remake Strategy Card -->
+          <div class="result-card strategy-card">
+            <h3><i class="fas fa-clipboard-list"></i> Your Remake Strategy</h3>
+            <div id="strategyContent">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+          <!-- Competitor Comparison Card (conditional) -->
+          <div class="result-card comparison-card hidden" id="comparisonCard">
+            <h3><i class="fas fa-balance-scale"></i> Competitor Comparison</h3>
+            <div id="comparisonContent">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Loading Overlay -->
+  <div id="loadingOverlay" class="loading-overlay hidden">
+    <div class="spinner-large"></div>
+    <p>Processing...</p>
+  </div>
+
+  <!-- Notification Container -->
+  <div id="notificationContainer" class="notification-container"></div>
+
+  <script src="viral-analyzer.js"></script>
+</body>
+</html>
