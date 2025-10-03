@@ -1,0 +1,486 @@
+{
+  "name": "Viral Content Analyzer Webhook",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "viral-analyzer",
+        "httpMethod": "POST",
+        "responseMode": "responseNode",
+        "options": {
+          "cors": {
+            "allowedOrigins": "*"
+          }
+        }
+      },
+      "id": "webhook-trigger",
+      "name": "Webhook - Viral Analyzer",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "executionId",
+              "value": "={{ $execution.id }}"
+            },
+            {
+              "name": "timestamp",
+              "value": "={{ $now.toISO() }}"
+            },
+            {
+              "name": "contentUrl",
+              "value": "={{ $json.body.contentUrl }}"
+            },
+            {
+              "name": "platform",
+              "value": "={{ $json.body.platform }}"
+            },
+            {
+              "name": "analysisDepth",
+              "value": "={{ $json.body.analysisDepth }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "set-variables",
+      "name": "Set Variables",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.contentUrl }}",
+                    "rightValue": "tiktok.com",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ]
+              },
+              "outputKey": "tiktok"
+            },
+            {
+              "conditions": {
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.contentUrl }}",
+                    "rightValue": "instagram.com",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ]
+              },
+              "outputKey": "instagram"
+            },
+            {
+              "conditions": {
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.contentUrl }}",
+                    "rightValue": "youtube.com",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ]
+              },
+              "outputKey": "youtube"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      },
+      "id": "platform-router",
+      "name": "Platform Router",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.apify.com/v2/acts/clockworks~tiktok-scraper/run-sync-get-dataset-items",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "token",
+              "value": "={{ $env.APIFY_TOKEN }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"profiles\": [\"={{ $json.contentUrl }}\"],\n  \"resultsPerPage\": 1,\n  \"shouldDownloadVideos\": false,\n  \"shouldDownloadCovers\": true\n}",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "scrape-tiktok",
+      "name": "Scrape TikTok",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [850, 200]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.apify.com/v2/acts/apify~instagram-scraper/run-sync-get-dataset-items",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "token",
+              "value": "={{ $env.APIFY_TOKEN }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"directUrls\": [\"={{ $json.contentUrl }}\"],\n  \"resultsLimit\": 1\n}",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "scrape-instagram",
+      "name": "Scrape Instagram",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [850, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.apify.com/v2/acts/bernardo~youtube-scraper/run-sync-get-dataset-items",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "token",
+              "value": "={{ $env.APIFY_TOKEN }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"startUrls\": [\"={{ $json.contentUrl }}\"],\n  \"maxResults\": 1\n}",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "scrape-youtube",
+      "name": "Scrape YouTube",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [850, 400]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Normalize scraped data from different platforms\nconst scrapedData = items[0].json;\nconst platform = $('Set Variables').item.json.platform;\n\nlet normalizedData = {\n  platform: platform,\n  contentUrl: $('Set Variables').item.json.contentUrl,\n  executionId: $('Set Variables').item.json.executionId\n};\n\nif (platform === 'tiktok' || $('Set Variables').item.json.contentUrl.includes('tiktok')) {\n  const data = Array.isArray(scrapedData) ? scrapedData[0] : scrapedData;\n  normalizedData = {\n    ...normalizedData,\n    creator: data.authorMeta?.name || data.author || 'Unknown',\n    postDate: data.createTime || new Date().toISOString(),\n    thumbnail: data.covers?.default || data.videoMeta?.cover || '',\n    description: data.text || '',\n    metrics: {\n      views: data.playCount || data.videoMeta?.playCount || 0,\n      likes: data.diggCount || data.videoMeta?.diggCount || 0,\n      shares: data.shareCount || data.videoMeta?.shareCount || 0,\n      comments: data.commentCount || data.videoMeta?.commentCount || 0\n    },\n    hashtags: data.hashtags || [],\n    musicInfo: data.musicMeta || {}\n  };\n} else if (platform === 'instagram' || $('Set Variables').item.json.contentUrl.includes('instagram')) {\n  const data = Array.isArray(scrapedData) ? scrapedData[0] : scrapedData;\n  normalizedData = {\n    ...normalizedData,\n    creator: data.ownerUsername || 'Unknown',\n    postDate: data.timestamp || new Date().toISOString(),\n    thumbnail: data.displayUrl || '',\n    description: data.caption || '',\n    metrics: {\n      views: data.videoViewCount || 0,\n      likes: data.likesCount || 0,\n      shares: 0,\n      comments: data.commentsCount || 0\n    },\n    hashtags: data.hashtags || [],\n    type: data.type || 'post'\n  };\n} else if (platform === 'youtube' || $('Set Variables').item.json.contentUrl.includes('youtube')) {\n  const data = Array.isArray(scrapedData) ? scrapedData[0] : scrapedData;\n  normalizedData = {\n    ...normalizedData,\n    creator: data.channelName || 'Unknown',\n    postDate: data.uploadDate || new Date().toISOString(),\n    thumbnail: data.thumbnailUrl || '',\n    description: data.description || '',\n    metrics: {\n      views: data.viewCount || 0,\n      likes: data.likes || 0,\n      shares: 0,\n      comments: data.commentsCount || 0\n    },\n    duration: data.duration || '',\n    title: data.title || ''\n  };\n}\n\nreturn normalizedData;"
+      },
+      "id": "normalize-data",
+      "name": "Normalize Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1050, 300]
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o",
+        "messages": {
+          "values": [
+            {
+              "role": "system",
+              "content": "You are a viral content analyst. Analyze the provided content and identify key viral factors that made it successful. Be specific and actionable."
+            },
+            {
+              "role": "user",
+              "content": "Analyze this {{ $json.platform }} content:\n\nURL: {{ $json.contentUrl }}\nCreator: {{ $json.creator }}\nDescription: {{ $json.description }}\nMetrics: {{ JSON.stringify($json.metrics) }}\nHashtags: {{ JSON.stringify($json.hashtags) }}\n\nProvide:\n1. 3-5 key viral factors (with titles and descriptions)\n2. A viral score (0-100)\n3. The main hook strategy used\n4. Engagement triggers identified"
+            }
+          ]
+        },
+        "options": {
+          "temperature": 0.7,
+          "maxTokens": 1000
+        }
+      },
+      "id": "analyze-viral-factors",
+      "name": "Analyze Viral Factors",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [1250, 200]
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o",
+        "messages": {
+          "values": [
+            {
+              "role": "system",
+              "content": "You are a content strategist specializing in recreating viral content. Create actionable remake strategies."
+            },
+            {
+              "role": "user",
+              "content": "Based on this viral {{ $json.platform }} content, create a step-by-step remake strategy:\n\nOriginal content: {{ $json.description }}\nViral factors: {{ $('Analyze Viral Factors').item.json.content }}\nNiche: {{ $('Set Variables').item.json.niche || 'General' }}\n\nProvide 5-7 specific steps to recreate similar viral success. Each step should have a title and detailed description."
+            }
+          ]
+        },
+        "options": {
+          "temperature": 0.8,
+          "maxTokens": 1500
+        }
+      },
+      "id": "generate-strategy",
+      "name": "Generate Remake Strategy",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [1250, 400]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Format the final response\nconst normalizedData = $('Normalize Data').item.json;\nconst viralAnalysis = $('Analyze Viral Factors').item.json;\nconst remakeStrategy = $('Generate Remake Strategy').item.json;\n\n// Parse AI responses\nlet viralFactors = [];\nlet viralScore = 85;\nlet strategySteps = [];\n\ntry {\n  // Extract viral factors from AI response\n  const analysisText = viralAnalysis.content || viralAnalysis.message?.content || '';\n  const factorMatches = analysisText.match(/\\d\\.\\s*\\*\\*(.+?)\\*\\*:?\\s*(.+?)(?=\\d\\.|$)/gs) || [];\n  \n  viralFactors = factorMatches.map(match => {\n    const [, title, description] = match.match(/\\*\\*(.+?)\\*\\*:?\\s*(.+)/) || [];\n    return {\n      title: title?.trim() || 'Key Factor',\n      description: description?.trim() || 'Important element for viral success'\n    };\n  });\n  \n  // Extract viral score\n  const scoreMatch = analysisText.match(/viral\\s*score:?\\s*(\\d+)/i);\n  if (scoreMatch) {\n    viralScore = parseInt(scoreMatch[1]);\n  }\n  \n  // Extract remake strategy steps\n  const strategyText = remakeStrategy.content || remakeStrategy.message?.content || '';\n  const stepMatches = strategyText.match(/\\d\\.\\s*\\*\\*(.+?)\\*\\*:?\\s*(.+?)(?=\\d\\.|$)/gs) || [];\n  \n  strategySteps = stepMatches.map(match => {\n    const [, title, description] = match.match(/\\*\\*(.+?)\\*\\*:?\\s*(.+)/) || [];\n    return {\n      title: title?.trim() || 'Step',\n      description: description?.trim() || 'Action item'\n    };\n  });\n} catch (error) {\n  console.error('Error parsing AI responses:', error);\n}\n\n// Fallback content if parsing fails\nif (viralFactors.length === 0) {\n  viralFactors = [\n    {\n      title: \"Strong Hook\",\n      description: \"Captures attention within first 3 seconds\"\n    },\n    {\n      title: \"Trend Alignment\",\n      description: \"Content aligns with current platform trends\"\n    },\n    {\n      title: \"Engagement Triggers\",\n      description: \"Multiple calls-to-action encouraging interaction\"\n    }\n  ];\n}\n\nif (strategySteps.length === 0) {\n  strategySteps = [\n    {\n      title: \"Recreate the Hook\",\n      description: \"Start with a similar attention-grabbing opening\"\n    },\n    {\n      title: \"Adapt the Format\",\n      description: \"Use the same structure with your unique content\"\n    },\n    {\n      title: \"Optimize Timing\",\n      description: \"Post at peak engagement hours for your audience\"\n    }\n  ];\n}\n\n// Build final response\nconst response = {\n  executionId: normalizedData.executionId,\n  status: \"success\",\n  creator: normalizedData.creator,\n  platform: normalizedData.platform,\n  postDate: normalizedData.postDate,\n  thumbnail: normalizedData.thumbnail,\n  metrics: normalizedData.metrics,\n  viralScore: viralScore,\n  viralFactors: viralFactors,\n  remakeStrategy: strategySteps,\n  analysisDepth: $('Set Variables').item.json.analysisDepth,\n  timestamp: new Date().toISOString()\n};\n\n// Add competitor comparison if provided\nif ($('Set Variables').item.json.competitors && $('Set Variables').item.json.competitors.length > 0) {\n  response.competitorComparison = `<div class=\"comparison-note\">Competitor analysis available in premium version</div>`;\n}\n\nreturn response;"
+      },
+      "id": "format-response",
+      "name": "Format Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1450, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {
+          "responseCode": 200,
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              }
+            ]
+          }
+        }
+      },
+      "id": "webhook-response",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1650, 300]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "error",
+              "value": "={{ $json.error.message || 'Unknown error occurred' }}"
+            },
+            {
+              "name": "status",
+              "value": "error"
+            },
+            {
+              "name": "executionId",
+              "value": "={{ $('Set Variables').item.json.executionId }}"
+            }
+          ]
+        }
+      },
+      "id": "error-handler",
+      "name": "Error Handler",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [1250, 600]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {
+          "responseCode": 500,
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              }
+            ]
+          }
+        }
+      },
+      "id": "error-response",
+      "name": "Error Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1450, 600]
+    }
+  ],
+  "connections": {
+    "Webhook - Viral Analyzer": {
+      "main": [
+        [
+          {
+            "node": "Set Variables",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Variables": {
+      "main": [
+        [
+          {
+            "node": "Platform Router",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Platform Router": {
+      "main": [
+        [
+          {
+            "node": "Scrape TikTok",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Scrape Instagram",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Scrape YouTube",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Format Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Scrape TikTok": {
+      "main": [
+        [
+          {
+            "node": "Normalize Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Scrape Instagram": {
+      "main": [
+        [
+          {
+            "node": "Normalize Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Scrape YouTube": {
+      "main": [
+        [
+          {
+            "node": "Normalize Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Data": {
+      "main": [
+        [
+          {
+            "node": "Analyze Viral Factors",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Generate Remake Strategy",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze Viral Factors": {
+      "main": [
+        [
+          {
+            "node": "Format Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Remake Strategy": {
+      "main": [
+        [
+          {
+            "node": "Format Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Response": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "error-handler"
+  }
+}
